@@ -8,7 +8,7 @@ from time import time
 import json
 import os
 
-def reader_supervised_evaluate(reader, loader, metrics_obj, config):
+def reader_supervised_evaluate(config, reader, loader, metrics_obj):
     reader.model.eval()
     losses = []
     bleu_scores = []
@@ -17,20 +17,20 @@ def reader_supervised_evaluate(reader, loader, metrics_obj, config):
     em_scores = []
 
     process = tqdm(loader)
-    batch_keys = ['input_ids', 'attention_mask', 'labels']
+    batch_keys = ['ids', 'mask', 'label']
     for batch in process:
         gc.collect()
         torch.cuda.empty_cache()
 
         batch = {k: batch[k].to(config.device, non_blocking=True) for k in batch_keys}
-        output = reader.model(input_ids=batch['input_ids'], labels=batch['labels'],
-                       attention_mask=batch['attention_mask'])
+        output = reader.model(input_ids=batch['ids'], labels=batch['label'],
+                       attention_mask=batch['mask'])
 
         losses.append(output.loss.item())
         process.set_postfix({"avg_loss": np.mean(losses)})
 
-        output = reader.model.generate(input_ids=batch['input_ids'], 
-                                attention_mask=batch['attention_mask'], 
+        output = reader.model.generate(input_ids=batch['ids'], 
+                                attention_mask=batch['mask'], 
                                 max_length=128)     
 
         predicted = reader.tokenizer.batch_decode(output, skip_special_tokens=True)
@@ -48,11 +48,11 @@ def reader_supervised_evaluate(reader, loader, metrics_obj, config):
 
     return losses, scores
 
-def reader_supervised_train(reader, loader, optimizer, config):
+def reader_supervised_train(config, reader, loader, optimizer):
     reader.model.train()
     losses = []
     process = tqdm(loader)
-    batch_keys = ['input_ids', 'attention_mask', 'labels']
+    batch_keys = ['ids', 'mask', 'label']
     for batch in process:
         gc.collect()
         torch.cuda.empty_cache()

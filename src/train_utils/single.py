@@ -14,7 +14,7 @@ def param_count(model):
 
 #
 def single_run(config, model_struct,  train_loader, eval_loader, 
-               train_func, evaluate_func, compare_score):
+               train_func, evaluate_func, metrics_obj):
 
     print("Model parameters count: ",param_count(model_struct.model))
 
@@ -49,11 +49,11 @@ def single_run(config, model_struct,  train_loader, eval_loader,
 
         print(f"Epoch {i+1} start:")
         train_s = time()
-        train_losses = train_func(model_struct, train_loader, 
-                             optimizer, config)
+        train_losses = train_func(config, model_struct, train_loader, 
+                                  optimizer)
         train_e = time()
-        eval_losses, eval_metrics = evaluate_func(model_struct, eval_loader, 
-                                                  config)
+        eval_losses, eval_metrics = evaluate_func(config, model_struct, eval_loader, 
+                                                  metrics_obj)
         eval_e = time()
         
         torch.cuda.empty_cache()
@@ -67,11 +67,11 @@ def single_run(config, model_struct,  train_loader, eval_loader,
         print(eval_scores[-1])
 
         #
-        if best_score <= eval_scores[compare_score]:
+        if best_score <= eval_scores[config.base_score_compare]:
             print("Update Best Model")
             if config.to_save:
                 torch.save(model_struct.model.state_dict(), path_to_best_model_save)
-            best_score = eval_scores[compare_score]
+            best_score = eval_scores[config.base_score_compare]
 
         # Save train/eval info to logs folder
         epoch_log = {

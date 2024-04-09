@@ -5,11 +5,11 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 
 #
-def retriever_supervised_train(retriever, loader, optimizer, config):
+def retriever_supervised_train(config, retriever, loader, optimizer):
     retriever.model.train()
     losses = []
     process = tqdm(loader)
-    batch_keys = ['q_input_ids', 'q_attention_mask', 'd_input_ids', 'd_attention_mask']
+    batch_keys = ['q_ids', 'q_mask', 'd_ids', 'd_mask']
     for batch in process:
         gc.collect()
         torch.cuda.empty_cache()
@@ -19,8 +19,8 @@ def retriever_supervised_train(retriever, loader, optimizer, config):
         batch = {k: batch[k].to(config.device) for k in batch_keys}
 
         output = retriever.model(
-            q_ids=batch['q_input_ids'], q_masks=batch['q_attention_mask'],
-            d_ids=batch['d_input_ids'], d_masks=batch['d_attention_mask']
+            q_ids=batch['q_ids'], q_masks=batch['q_mask'],
+            d_ids=batch['d_ids'], d_masks=batch['d_mask']
             )
         
         loss = retriever.loss(output)
@@ -33,14 +33,14 @@ def retriever_supervised_train(retriever, loader, optimizer, config):
     return losses
 
 #
-def retriever_supervised_evaluate(retriever, loader, config):
+def retriever_supervised_evaluate(config, retriever, loader):
     scores = {
         'accuracy': [], 
     }
     losses = []
 
     process = tqdm(loader)
-    batch_keys = ['q_input_ids', 'q_attention_mask', 'd_input_ids', 'd_attention_mask']
+    batch_keys = ['q_ids', 'q_mask', 'd_ids', 'd_mask']
     for batch in process:
         gc.collect()
         torch.cuda.empty_cache()
@@ -48,13 +48,13 @@ def retriever_supervised_evaluate(retriever, loader, config):
         batch = {k: batch[k].to(config.device) for k in batch_keys}
 
         output = retriever.model(
-            q_ids=batch['q_input_ids'], q_masks=batch['q_attention_mask'],
-            d_ids=batch['d_input_ids'], d_masks=batch['d_attention_mask']
+            q_ids=batch['q_ids'], q_masks=batch['q_mask'],
+            d_ids=batch['d_ids'], d_masks=batch['d_mask']
             )
         
         loss = retriever.loss(output)
         predicted = output.argmax(dim=1)
-        target = torch.arange(0, batch['q_input_ids'][0])
+        target = torch.arange(0, batch['q_ids'][0])
 
         losses.append(loss.item())
         process.set_postfix({"avg_loss": np.mean(losses)})
@@ -67,9 +67,9 @@ def retriever_supervised_evaluate(retriever, loader, config):
     return losses, scores
 
 #
-def retriever_unsupervised_train(retriever, loader, optimizer, config):
+def retriever_unsupervised_train(config, retriever, loader, optimizer):
     pass
 
 #
-def retriever_unsupervised_evaluate(retriever, loader, config):
+def retriever_unsupervised_evaluate(config, retriever, loader):
     pass

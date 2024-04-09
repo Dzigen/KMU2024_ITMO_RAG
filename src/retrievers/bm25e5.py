@@ -12,16 +12,18 @@ import torch.nn as nn
 from .archs.e5_model import E5, E5Tokenizer
 
 class BM25E5Retriever:
-    def __init__(self, bm25_candidates=256, e5_candidates=4, docs_bs=4, 
-                 threshold=0, mode='eval') -> None:
+    def __init__(self, bm25_candidates=256, k=4, docs_bs=4, 
+                 threshold=0, mode='eval', device='cpu') -> None:
         self.bm25_cands = bm25_candidates
-        self.e5_cands = e5_candidates
+        self.e5_cands = k
         self.docs_bs = docs_bs
         self.threshold = threshold
         self.mode = mode
+        self.device = device
 
         print("Loading base E5-model...")
         self.model = E5()
+        self.model.to(device)
         self.stage2_tokenizer = E5Tokenizer
 
         if mode == 'train':
@@ -39,9 +41,10 @@ class BM25E5Retriever:
             self.bm25_model = pickle.load(bm25result_file)
 
     #
-    def load_e5_model(self, weights_path):
+    def load_model(self, weights_path):
         print("Load tuned E5-model...")
         self.model.load_state_dict(torch.load(weights_path))
+        self.model.device(self.device)
 
     #
     def texts2documents(self, texts, metadata=[]):

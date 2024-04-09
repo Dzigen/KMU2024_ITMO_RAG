@@ -12,16 +12,18 @@ import torch.nn as nn
 from .archs.colbert_model import ColBERT, ColBertTokenizer
 
 class BM25ColBertRetriever:
-    def __init__(self, bm25_candidates=256, colbert_candidates=4, colbert_reddim=64, 
-                 docs_bs=4, threshold=0, mode='eval') -> None:
+    def __init__(self, bm25_candidates=256, k=4, colbert_reddim=64, 
+                 docs_bs=4, threshold=0, mode='eval', device='cpu') -> None:
         self.bm25_cands = bm25_candidates
-        self.colbert_cands = colbert_candidates
+        self.colbert_cands = k
         self.docs_bs = docs_bs
         self.threshold = threshold
         self.mode = mode
+        self.device = device
 
         print("Loading base ColBERT-model...")
         self.model = ColBERT(reduced_dim=colbert_reddim)
+        self.model.to(device)
         self.stage2_tokenizer = ColBertTokenizer
 
         self.tokenize = lambda x: self.stage2_tokenizer(
@@ -39,9 +41,10 @@ class BM25ColBertRetriever:
             self.bm25_model = pickle.load(bm25result_file)
 
     #
-    def load_colbert_model(self, weights_path):
+    def load_model(self, weights_path):
         print("Load tuned ColBERT-model...")
         self.model.load_state_dict(torch.load(weights_path))
+        self.model.device(self.device)
 
    #
     def texts2documents(self, texts, metadata=[]):
