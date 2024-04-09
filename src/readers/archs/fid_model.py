@@ -1,11 +1,10 @@
-
-
-
 import types
 import torch
 import transformers
 import torch.nn.functional as F
 from torch import nn
+
+T5_BASE_PATH = 'google-t5/t5-base'
 
 class FiDT5(transformers.T5ForConditionalGeneration):
     def __init__(self, config):
@@ -29,10 +28,10 @@ class FiDT5(transformers.T5ForConditionalGeneration):
     # dimensions used in the decoder.
     # EncoderWrapper resizes the inputs as (B * N) x L.
     def forward(self, input_ids=None, attention_mask=None, **kwargs):
-        #print("forward 2")
+        print("forward 2")
 
         # BxNxL
-        #print("init dimension: ", input_ids.shape if input_ids is not None else input_ids)
+        print("init dimension: ", input_ids.shape if input_ids is not None else input_ids)
 
         if input_ids != None:
             # inputs might have already be resized in the generate method
@@ -43,7 +42,7 @@ class FiDT5(transformers.T5ForConditionalGeneration):
             attention_mask = attention_mask.view(attention_mask.size(0), -1)
 
         # BxN*L
-        #print("2d resize: ", input_ids.shape if input_ids is not None else input_ids)
+        print("2d resize: ", input_ids.shape if input_ids is not None else input_ids)
 
         return super().forward(
             input_ids=input_ids,
@@ -53,12 +52,12 @@ class FiDT5(transformers.T5ForConditionalGeneration):
 
     # We need to resize the inputs here, as the generate method expect 2D tensors
     def generate(self, input_ids, attention_mask, max_length):
-        #print("generate")
+        print("generate")
 
         self.encoder.n_passages = input_ids.size(1)
         
         # BxNxL
-        #print("init dimension",input_ids.shape)
+        print("init dimension", input_ids.shape)
 
         return super().generate(
             input_ids=input_ids.view(input_ids.size(0), -1),
@@ -100,10 +99,10 @@ class EncoderWrapper(torch.nn.Module):
         apply_checkpoint_wrapper(self.encoder, use_checkpoint)
 
     def forward(self, input_ids=None, attention_mask=None, **kwargs,):
-        #print("forward 3")
+        print("forward 3")
         # BxN*L
-        #print("2d resize: ",input_ids.shape)
-        #print("---")
+        print("2d resize: ",input_ids.shape)
+        print("---")
 
         # total_length = n_passages * passage_length
         bsz, total_length = input_ids.shape
@@ -112,19 +111,19 @@ class EncoderWrapper(torch.nn.Module):
         attention_mask = attention_mask.view(bsz*self.n_passages, passage_length)
         
         # B*NxL
-        #print("candidates flat: ",input_ids.shape)
+        print("candidates flat: ",input_ids.shape)
 
         outputs = self.encoder(input_ids, attention_mask, **kwargs)
         
         # B*NxLx768
-        #print("encoder output ",outputs[0].shape)
+        print("encoder output ",outputs[0].shape)
         
         
-        #print("candidates concatenation:")
+        print("candidates concatenation:")
         for key in outputs.keys():
             # BxN*Lx768
             outputs[key] = outputs[key].view(bsz, self.n_passages*passage_length, -1)
-            #print(key, outputs[key].shape)
+            print(key, outputs[key].shape)
         
         return outputs
 

@@ -1,57 +1,65 @@
-import pickle
-import torc
-from datasets import Dataset
-from torch.utils.data import DataLoader
-from transformers import AutoModel, AutoTokenizer
-import numpy as np
-import gc
-import torch
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
+from tqdm import tqdm
+import numpy as np
 
-import sys 
-sys.path.insert(0, '/home/dzigen/Desktop/ITMO/ВКР/КМУ2024')
-gc.collect()
-
-
-
-# faiss from langchain
-
-from archs.e5_model import E5Tokenizer, E5_BASE_PATH
+from .archs.e5_model import E5_BASE_PATH
 
 class E5Retriever:
-    def __init__(self, texts, k):
-        model_kwargs = {'device': 'cpu'}
-        encode_kwargs = {'normalize_embeddings': False}
-        self.cands =k
+    def __init__(self, k=4, device='cpu', threshold=0, mode='eval'):
+        model_kwargs = {'device': device}
+        encode_kwargs = {'normalize_embeddings': True}
+        self.cands = k
+        self.threshold = threshold
+        self.mode = mode
 
+        print("Loading E5-model...")
         self.embeddings = HuggingFaceEmbeddings(
             model_name=E5_BASE_PATH,
             model_kwargs=model_kwargs,
             encode_kwargs=encode_kwargs)
-        
-        self.e5_tokenizer = E5Tokenizer
 
-        self.tokenize = lambda x: self.e5_tokenizer(
-            x, max_length=512, truncation=True, 
-            padding=True, return_tensors='pt')
-
-        documents = self.texts2documents(texts)
-
+    #
+    def make_base(self, texts, metadata, save_file=None):
+        print("Converting texts with metadata to documents...")
+        documents = self.texts2documents(texts, metadata)
+        print("Indexing documents...")
         self.faiss = FAISS.from_documents(documents, self.embeddings)
 
+        if save_file is not None:
+            self.faiss.save_local(save_file)
+
     #
-    def texts2documents(self, texts):
-        return [Document(page_content=txt, metadata={'tokenized': self.tokenize(txt)}) 
-                for txt in texts]
+    def load_base(self, file_path):
+        self.faiss = FAISS.load_local(file_path, self.embeddings,
+                                      allow_dangerous_deserialization=True)
+
+    #   
+    def texts2documents(self, texts, metadata):
+        return [Document(page_content="passage: "+txt, metadata=meta) 
+                for txt, meta in tqdm(zip(texts, metadata))]
     
     #
-    def search(self, query):
-        results = self.faiss.similarity_search_with_score(query, k=self.cands)
+    def search(self, query, tokenized_query=None):
+        # stage 1
+        print("Retrieving documents with E5...")
+        results = self.faiss.similarity_search_with_score('query: '+query, k=self.cands)
 
-        scores = list(map(lambda item: item[1], results))
-        texts = list(map(lambda item: item[0].page_content, results))
-        tokenized_texts = list(map(lambda item: item[0].metadata['tokenized'], results))
+        scores = np.array([item[1] for item in results])
+        texts = np.array([item[0].page_content[9:] for item in results])
+        metadata = np.array([item[0].metadata for item in results])
 
-        return scores, texts, tokenized_texts
+        # stage 2
+        if self.mode == 'eval':
+            print("Filtering irrelevant document by threshold...")
+            filtered_indexes = self.filter_by_score(scores)
+
+            return texts[filtered_indexes], scores[filtered_indexes], metadata[filtered_indexes]
+
+        else:
+            return texts, scores, metadata
+
+    #
+    def filter_by_score(self, scores):
+        return [i for i, val in enumerate(scores) if val > self.threshold]
