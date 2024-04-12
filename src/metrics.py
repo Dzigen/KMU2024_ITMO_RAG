@@ -72,4 +72,4 @@ class ReaderMetrics:
         return round(np.mean(accum),5)
     
     def exact_match(self, predicted, targets):
-        return round(self.em_obj(predictions=predicted, references=targets)["exact_match"], 2)
+        return round(self.em_obj.compute(predictions=predicted, references=targets)["exact_match"], 2)

@@ -1,4 +1,4 @@
-from langchain.retrievers import BM25Retriever
+from langchain_community.retrievers import BM25Retriever
 from langchain_core.documents import Document
 import pickle
 from datasets import Dataset
@@ -27,8 +27,8 @@ class BM25ColBertRetriever:
         self.stage2_tokenizer = ColBertTokenizer
 
         self.tokenize = lambda x: self.stage2_tokenizer(
-            x, max_length=512, truncation=True, 
-            padding='max_length', return_tensors='pt')
+            x, return_tensors='pt', truncation=True, padding=True,
+            add_special_tokens=True)
         
         if mode == 'train':
             self.loss_objective = nn.CrossEntropyLoss()
@@ -45,6 +45,10 @@ class BM25ColBertRetriever:
         print("Load tuned ColBERT-model...")
         self.model.load_state_dict(torch.load(weights_path))
         self.model.device(self.device)
+
+    #
+    def save_model(self, model_path):
+        torch.save(self.model.state_dict(), model_path)
 
    #
     def texts2documents(self, texts, metadata=[]):

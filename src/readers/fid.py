@@ -9,9 +9,9 @@ class FiDReader:
         self.tokenizer = transformers.T5Tokenizer.from_pretrained(base_model)
         self.device = device
 
-        self.tokenize = lambda x: self.tokenizer.batch_encode_plus(
-            x, max_length=512, truncation=True, 
-            padding='max_length', return_tensors='pt')
+        self.tokenize = lambda x: self.tokenizer(
+            x, max_length=511, return_tensors='pt', truncation=True, padding=True,
+            add_special_tokens=True)
 
         self.model = FiDT5(t5.config)
         self.model.load_t5(t5.state_dict())
@@ -19,5 +19,9 @@ class FiDReader:
 
     def load_model(self, weights_path):
         print("Load tuned FiD-model...")
-        self.model.load_state_dict(torch.load(weights_path))
+        self.model.load_t5(torch.load(weights_path))
+        self.model.to(self.device)
+
+    def save_model(self,weights_paths):
+        self.model.save_t5(weights_paths)
         self.model.to(self.device)

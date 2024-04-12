@@ -32,16 +32,16 @@ class JoinLoss:
     def k_loss(self, reader_logits, labels):
         '''
         params:
-            reader_logits: BxLxVOCAB_SIZE
+            reader_logits: BxNxLxVOCAB_SIZE
             labels: BxL
 
         output:
-            scores: B
+            scores: BxN
         '''
-        bsz, seq_len = reader_logits.shape[0], reader_logits.shape[1]
+        bsz, k, seq_len = reader_logits.shape[0], reader_logits.shape[1], reader_logits.shape[2]
 
         return torch.mean(-torch.log(F.softmax(
-            reader_logits.logits, dim=-1).gather(2,labels.view(bsz, seq_len, -1))).view(bsz, seq_len), dim=1)
+            reader_logits.logits, dim=-1).gather(3,labels.view(bsz, 1, seq_len, -1))).view(bsz, k, seq_len), dim=2)
 
 #
 def param_count(model):
@@ -49,27 +49,27 @@ def param_count(model):
 
 
 def join_run(config, reader, retriever,  train_loader, eval_loader,
-             train_func, evaluate_func, compare_score):
+             train_func, evaluate_func, reader_metrics, retriever_metrics):
 
     print("Retriever-model parameters count: ",param_count(retriever.model))
     print("Reader-model parameters count: ",param_count(reader.model))
 
     print("Init folder to save")
-    run_dir = f"{config.base_dir}/{config.run_name}"
+    run_dir = f"{config.base_dir}/logs/{config.run_name}"
     if os.path.isdir(run_dir):
         print("Error: Директория существует")
         return
     os.mkdir(run_dir)
-    logs_file_path = f'{config.base_dir}/{config.run_name}/logs.txt'
-    retriever_bmodel_save_path = f"{config.base_dir}/{config.run_name}/retriever_bestmodel.pt"
-    retriever_lmodel_save_path = f"{config.base_dir}/{config.run_name}/retriever_lastmodel.pt"
-    reader_bmodel_save_path = f"{config.base_dir}/{config.run_name}/reader_bestmodel.pt"
-    reader_lmodel_save_path = f"{config.base_dir}/{config.run_name}/reader_lastmodel.pt"
+    logs_file_path = f'{run_dir}/logs.txt'
+    retriever_bmodel_save_path = f"{run_dir}/retriever_bestmodel.pt"
+    retriever_lmodel_save_path = f"{run_dir}/retriever_lastmodel.pt"
+    reader_bmodel_save_path = f"{run_dir}/reader_bestmodel.pt"
+    reader_lmodel_save_path = f"{run_dir}/reader_lastmodel.pt"
 
     print("Saving used nn-arch")
-    with open(f"{config.base_dir}/{config.run_name}/used_reader_arch.txt", 'w', encoding='utf-8') as fd:
+    with open(f"{run_dir}/used_reader_arch.txt", 'w', encoding='utf-8') as fd:
         fd.write(reader.model.__str__())
-    with open(f"{config.base_dir}/{config.run_name}/used_retriever_arch.txt", 'w', encoding='utf-8') as fd:
+    with open(f"{run_dir}/used_retriever_arch.txt", 'w', encoding='utf-8') as fd:
         fd.write(retriever.model.__str__())
 
     print("Saving used config")
@@ -93,11 +93,12 @@ def join_run(config, reader, retriever,  train_loader, eval_loader,
 
         print(f"Epoch {i+1} start:")
         train_s = time()
-        train_losses = train_func(reader, retriever, train_loader, 
-                                  optimizer, criterion, config)
+        train_losses = train_func(config, reader, retriever, train_loader, 
+                                  optimizer, criterion)
         train_e = time()
-        eval_losses, eval_metrics = evaluate_func(reader, retriever, eval_loader,
-                                                   criterion, config)
+        eval_losses, eval_metrics = evaluate_func(config, reader, retriever, 
+                                                  eval_loader,  criterion, 
+                                                  reader_metrics, retriever_metrics, i)
         eval_e = time()
         
         torch.cuda.empty_cache()
@@ -111,12 +112,12 @@ def join_run(config, reader, retriever,  train_loader, eval_loader,
         print(eval_scores[-1])
 
         #
-        if best_score <= eval_scores[compare_score]:
+        if best_score <= eval_scores[-1][config.base_score_compare]:
             print("Update Best Model")
             if config.to_save:
                 torch.save(retriever.model.state_dict(), retriever_bmodel_save_path)
                 torch.save(reader.model.state_dict(), reader_bmodel_save_path)
-            best_score = eval_scores[compare_score]
+            best_score = eval_scores[-1][config.base_score_compare]
 
         # Save train/eval info to logs folder
         epoch_log = {
@@ -137,33 +138,150 @@ def join_run(config, reader, retriever,  train_loader, eval_loader,
 
     return ml_train, ml_eval, best_score, eval_scores
 
-def join_evaluate(reader, retriever, eval_loader, criterion,
-                config):
-    pass
+def join_evaluate(config, reader, retriever,  loader,  criterion, 
+                  reader_metrics, retriever_metrics, epoch):
+    reader.model.eval()
+    retriever.model.eval()
+    
+    scores = {
+        'reader': {
+            'bleu': [],'rouge': [],
+            'meteor': [],'em': []
+        },
+        'retriever': {
+            'MRR': [],
+            'mAP': []
+        }
+    }
+    losses = []
 
-    # извлекаем k релевантных пассажей по запросу
-    # конкатенируем запрос с пассажами
-    # на их основе генерируем ответ 
+    pred_answers = []
+    step = 0
+    process = tqdm(loader)
+    for batch in process:
+        step += 1
+        gc.collect()
+        torch.cuda.empty_cache()
 
-    # выполняем оценку качества
+        q_ids = batch['q_ids'].to(config.device, non_blocking=True)
+        q_masks = batch['q_mask'].to(config.device, non_blocking=True)
 
-def join_train(reader, retriever, train_loader, optimizer, criterion,
-                config):
-    pass
+        # retriever-part
+        prep_txts = []
+        doc_bsz = config.retriever_docs_batch
+        cands_k = config.retrieved_cands
+        cands_scores = torch.tensor([], requires_grad=True)
+        for i in range(len(batch['q_text'])):
+            texts, k_scores, metadata = retriever.search(
+                batch['q_text'][i], {'input_ids': q_ids[i].view(1,-1), 
+                                     'attention_mask':q_masks[i].view(1,-1)})
 
+            if 'relevant_d_ids' in batch.keys():
+                predicted_d_ids = [meta['in_base_index'] for meta in metadata]
 
-    # извлекаем k релевантных пассажей по query
+                scores['retriever']['MRR'].append(retriever_metrics.mAP(
+                    predicted_d_ids,batch['relevant_d_ids'][i]))
+                scores['retriever']['mAP'].append(retriever_metrics.MRR(
+                    predicted_d_ids,batch['relevant_d_ids'][i]))
 
-    # заного прогоняем пассажи через retriever-часть
-    # получаем скоры
+            cands_scores = torch.cat((cands_scores, k_scores), dim=0)
+            prep_txts += list(map(lambda t: config.reader_input_format.format(q=batch['q_text'][i],c=t), texts))
+        
+        # reader-part
+        tokenized_txts = reader.tokenize(prep_txts)
+        tokenized_txts = {k: v.to(config.device) for k, v in tokenized_txts.items()}
 
-    # конкатенируем пассажи и запросы
-    # передаём в read модель
-    # получем общий loss
+        output = reader.model(
+            input_ids=tokenized_txts['input_ids'].view(doc_bsz*cands_k, 1, -1), 
+            attention_mask=tokenized_txts['attention_mask'].view(doc_bsz*cands_k, 1, -1))
 
-    # подаём пассаж для каждлого запроса по отдельности
-    # получем loss для каждого пассажа в отдельности
-    # делаем stop gradioents
+        print("k_states: ", output.last_hidden_states.shape)
+        reader_k_loss = criterion.k_loss(output.last_hidden_states, batch['label'])
 
-    # комбинируем скор из ретривера, общий лосс от ридера и разделённый лосс от ридера
+        output = reader.model(
+            input_ids=tokenized_txts['input_ids'].view(doc_bsz, cands_k, -1), 
+            labels=batch['label'], 
+            attention_mask=tokenized_txts['attention_mask'].view(doc_bsz, cands_k, -1))
+        
+        print("topk_states: ", output.last_hidden_states.shape)
+        reader_topk_loss = output.loss.item()
+
+        loss = criterion(reader_topk_loss, reader_k_loss, cands_scores.view(doc_bsz, cands_k))
+
+        losses.append(loss.item())
+        process.set_postfix({"avg_loss": np.mean(losses)})
+
+        output = reader.model.generate(
+            input_ids=tokenized_txts['input_ids'].view(doc_bsz, cands_k, -1),
+            attention_mask=tokenized_txts['attention_mask'].view(doc_bsz, cands_k, -1), max_length=64)   
+
+        predicted = reader.tokenizer.batch_decode(output, skip_special_tokens=True)
+
+        pred_answers[step] = {'gen':predicted, 'target': batch['label_text']}
+        scores['reader']['bleu'].append(reader_metrics.bleu(predicted,[batch['label_text'][i]]))
+        scores['reader']['rouge'].append(reader_metrics.rouge(predicted,[batch['label_text'][i]]))
+        scores['reader']['meteor'].append(reader_metrics.meteor(predicted,[batch['label_text'][i]]))
+        scores['reader']['em'].append(reader_metrics.exact_match(predicted,[batch['label_text'][i]]))
+
+    print("Saving generated answers during evaluation...")
+    with open(f"{config.base_dir}/logs/{config.run_name}/gen_answers_epoch{epoch}.json", 'w', encoding='utf-8') as fd:
+        json.dump(pred_answers, indent=2, fp=fd)
+
+    return losses, scores
+
+def join_train(config, reader, retriever, loader, 
+               optimizer, criterion):
+    reader.model.train()
+    retriever.model.train()
+
+    losses = []
+    process = tqdm(loader)
+    for batch in process:
+        gc.collect()
+        torch.cuda.empty_cache()
+
+        q_ids = batch['q_ids'].to(config.device, non_blocking=True)
+        q_masks = batch['q_mask'].to(config.device, non_blocking=True)
+
+        # retriever-part
+        prep_txts = []
+        doc_bsz = config.retriever_docs_batch
+        cands_k = config.retrieved_cands
+        cands_scores = torch.tensor([], requires_grad=True)
+        for i in range(len(batch['q_text'])):
+            texts, k_scores, _ = retriever.search(
+                batch['q_text'][i], {'input_ids': q_ids[i].unsqueeze(0), 
+                                     'attention_mask':q_masks[i].unsqueeze(0)})
+
+            cands_scores = torch.cat((cands_scores, k_scores), dim=0)
+            prep_txts += list(map(lambda t: config.reader_input_format.format(q=batch['q_text'][i],c=t), texts))
+        
+        # reader-part
+        tokenized_txts = reader.tokenize(prep_txts)
+        tokenized_txts = {k: v.to(config.device) for k, v in tokenized_txts.items()}
+
+        output = reader.model(
+            input_ids=tokenized_txts['input_ids'].view(doc_bsz*cands_k, 1, -1), 
+            attention_mask=tokenized_txts['attention_mask'].view(doc_bsz*cands_k, 1, -1))
+
+        print("k_states: ", output.last_hidden_states.shape)
+        reader_k_loss = criterion.k_loss(output.last_hidden_states, batch['label'])
+
+        output = reader.model(
+            input_ids=tokenized_txts['input_ids'].view(doc_bsz, cands_k, -1), 
+            labels=batch['label'], 
+            attention_mask=tokenized_txts['attention_mask'].view(doc_bsz, cands_k, -1))
+        
+        print("topk_states: ", output.last_hidden_states.shape)
+        reader_topk_loss = output.loss
+
+        loss = criterion(reader_topk_loss, reader_k_loss, cands_scores.view(doc_bsz, cands_k))
+
+        loss.backward()
+        optimizer.step()
+
+        losses.append(loss.item())
+        process.set_postfix({"avg_loss": np.mean(losses)})
+
+    return losses
 

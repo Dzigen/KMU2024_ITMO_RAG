@@ -1,4 +1,4 @@
-from langchain.retrievers import BM25Retriever
+from langchain_community.retrievers import BM25Retriever
 from langchain_core.documents import Document
 import pickle
 from datasets import Dataset
@@ -31,8 +31,8 @@ class BM25E5Retriever:
             self.loss = lambda x: self.loss_objective(x, torch.arange(0, x.shape[0]))
 
         self.tokenize = lambda x: self.stage2_tokenizer(
-            x, max_length=512, truncation=True, 
-            padding='max_length', return_tensors='pt')
+            x, return_tensors='pt', truncation=True, padding=True,
+            add_special_tokens=True)
 
     #
     def load_bm25_base(self, pickle_file):

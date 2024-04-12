@@ -8,43 +8,57 @@ from time import time
 import json
 import os
 
-def reader_supervised_evaluate(config, reader, loader, metrics_obj):
+def reader_supervised_evaluate(config, reader, loader, metrics_obj, epoch):
     reader.model.eval()
     losses = []
-    bleu_scores = []
-    rouge_scores = []
-    meteor_scores = []
-    em_scores = []
+
+    scores = {
+        'bleu': [],
+        'rouge': [],
+        'meteor': [],
+        'em': []
+    }
 
     process = tqdm(loader)
     batch_keys = ['ids', 'mask', 'label']
+    pred_answers = {}
+    step = 0
     for batch in process:
+        step += 1
         gc.collect()
         torch.cuda.empty_cache()
 
-        batch = {k: batch[k].to(config.device, non_blocking=True) for k in batch_keys}
-        output = reader.model(input_ids=batch['ids'], labels=batch['label'],
-                       attention_mask=batch['mask'])
+        device_b = {k: batch[k].to(config.device, non_blocking=True) for k in batch_keys}
+        output = reader.model(input_ids=device_b['ids'], labels=device_b['label'],
+                       attention_mask=device_b['mask'])
 
         losses.append(output.loss.item())
         process.set_postfix({"avg_loss": np.mean(losses)})
 
-        output = reader.model.generate(input_ids=batch['ids'], 
-                                attention_mask=batch['mask'], 
-                                max_length=128)     
+        output = reader.model.generate(input_ids=device_b['ids'], 
+                                attention_mask=device_b['mask'], 
+                                max_length=64, eos_token_id=reader.tokenizer.eos_token_id)
 
         predicted = reader.tokenizer.batch_decode(output, skip_special_tokens=True)
 
-        bleu_scores.append(metrics_obj.bleu(predicted,batch['label_text']))
-        rouge_scores.append(metrics_obj.rouge(predicted,batch['label_text']))
-        meteor_scores.append(metrics_obj.meteor(predicted,batch['label_text']))
-        em_scores.append(metrics_obj.exact_match(predicted,batch['label_text']))
+        #print(predicted)     
+
+        pred_answers[step] = {'gen':predicted, 'target': batch['label_text']}
+        scores['bleu'].append(metrics_obj.bleu(predicted,batch['label_text']))
+        scores['rouge'].append(metrics_obj.rouge(predicted,batch['label_text']))
+        scores['meteor'].append(metrics_obj.meteor(predicted,batch['label_text']))
+        scores['em'].append(metrics_obj.exact_match(predicted,batch['label_text']))
 
     scores = {
-        'bleu': round(np.mean(bleu_scores),5), 
-        'rouge': round(np.mean(rouge_scores),5),
-        'meteor': round(np.mean(meteor_scores),5),
-        'em': round(np.mean(em_scores),5)}
+        'bleu': round(np.mean(scores['bleu']),5), 
+        'rouge': round(np.mean(scores['rouge']),5),
+        'meteor': round(np.mean(scores['meteor']),5),
+        'em': round(np.mean(scores['em']),5)
+        }
+
+    print("Saving generated answers during evaluation...")
+    with open(f"{config.base_dir}/logs/{config.run_name}/gen_answers_epoch{epoch}.json", 'w', encoding='utf-8') as fd:
+        json.dump(pred_answers, indent=2, fp=fd)
 
     return losses, scores
 
@@ -61,7 +75,11 @@ def reader_supervised_train(config, reader, loader, optimizer):
 
         batch = {k: batch[k].to(config.device) for k in batch_keys}
 
-        output = reader.model(**batch)
+        #print(batch['ids'].shape, batch['mask'].shape, batch['label'].shape)
+
+        output = reader.model(
+            input_ids=batch['ids'], attention_mask=batch['mask'], 
+            labels=batch['label'])
 
         output.loss.backward()
         optimizer.step()
