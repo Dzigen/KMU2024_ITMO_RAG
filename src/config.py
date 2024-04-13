@@ -20,7 +20,9 @@ class RunConfig:
     device: str = 'cpu' # 'cuda' / 'cpu'
     retrieved_cands: int = 4 # number of candidates to retriever for reader
     retriever_docs_batch: int = 4 # from stage1 to stage2
-    train_dataset: str = 'squad'
+    dataset: str = 'squad'
+    train_size: int = 1000
+    eval_size: int = 1000
     base: str = '' # 'squad' / 'nq' / 'triviaqa'
     base_score_compare: str = 'meteor'
     to_save: bool = True

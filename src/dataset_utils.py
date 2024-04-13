@@ -5,13 +5,14 @@ import ast
 
 # for Join train
 class CustomTriviaQADataset(Dataset):
-    def __init__(self, path, part, tokenizer):
+    def __init__(self, path, part, tokenizer, data_size):
         self.tokenizer = tokenizer
-        self._data = pd.read_csv(f"{path}/{part}.tsv", sep='\t')
+        self._data = pd.read_csv(f"{path}/{part}.tsv", sep='\t').iloc[:data_size,:]
         self.part = part
+        self.data_size = data_size
         
     def __len__(self):
-        return 1000 if self.part == 'train' else self._data.shape[0]
+        return self._data.shape[0]
 
     def __getitem__(self,idx):
         query = self._data['query'][idx]
@@ -49,13 +50,14 @@ def join_collate(data):
 
 # for retriever only
 class CustomMSMARCODataset(Dataset):
-    def __init__(self, path, part, tokenizer):
+    def __init__(self, path, part, tokenizer, data_size):
         self.tokenizer = tokenizer
-        self._data = pd.read_csv(f"{path}/{part}.tsv", sep='\t')
+        self._data = pd.read_csv(f"{path}/{part}.tsv", sep='\t').iloc[:data_size,:]
         self.part = part
-        
+        self.data_size = data_size
+
     def __len__(self):
-        return 1000 if self.part == 'train' else self._data.shape[0]
+        return self._data.shape[0]
 
     def __getitem__(self,idx):
         query = self._data['query'][idx]
@@ -101,15 +103,13 @@ def reader_collate(data):
 
 # for reader only
 class CustomSQuADDataset(Dataset):
-    def __init__(self, data_dir, data_part, tokenizer, input_format):
+    def __init__(self, data_dir, data_part, tokenizer, input_format, data_size):
         self.tokenizer = tokenizer
         data = pd.read_csv(f"{data_dir}/{data_part}.csv", sep=';')
         self._data = data[['title','question', 'context','answers','in_base_index']]
         self._data['answers'] = self._data['answers'].apply(lambda v: ast.literal_eval(v)['text']) 
         self._data = self._data.drop(self._data[self._data['answers'].map(len) < 1].index).reset_index(drop=True)
-
-        if data_part == 'train':
-            self._data = self._data.iloc[:20000,:]
+        self._data = self._data.iloc[:data_size,:]
 
         self.input_format = input_format
 

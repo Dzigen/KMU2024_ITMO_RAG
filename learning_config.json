@@ -1,30 +1,32 @@
 {
     "base_dir": "/home/dzigen/Desktop/ITMO/ВКР/КМУ2024",
-    "run_name": "reader3",
+    "run_name": "retriever",
     
-    "run_type": "reader",
-    "eval_only": true,
+    "run_type": "retriever_colbert_msmarco",
+    "eval_only": false,
     "train_type": "supervised",
 
-    "reader_type": "fid",
-    "base_reader_weights": "google-t5/t5-base",
-    "reader_input_format": "context: {c}\nquestion: {q}",
+    "reader_type": "",
+    "base_reader_weights": "",
+    "reader_input_format": "",
     "tuned_reader_weights": "", 
     
-    "retriever_type": "", 
+    "retriever_type": "bm25colbert", 
     "tuned_retriever_weights": "",
     "retriever_frozen": false,
-    "retrieved_cands": -1,
-    "retriever_docs_batch": -1,
+    "retrieved_cands": 4,
+    "retriever_docs_batch": 4,
     "base": "",
 
     "lr": 1e-5,
-    "epochs": -1,
-    "batch_size": 6,
+    "epochs": 5,
+    "batch_size": 8,
     "device": "cuda",
-    
-    "train_dataset": "squad",
-    "base_score_compare": "meteor",
+    "base_score_compare": "accuracy",
+
+    "dataset": "msmarco",
+    "train_size": 500,
+    "eval_size": 500,
     
     "to_save": true
 }

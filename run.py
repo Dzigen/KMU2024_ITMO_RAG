@@ -101,26 +101,33 @@ else:
 
 print("Prepare Datasets and Dataloaders...")
 
-if learn_config.train_dataset == 'squad':
+if learn_config.dataset == 'squad':
     train_dataset = CustomSQuADDataset(
         f"{DATA_DIR}/SQuAD",'train', reader.tokenize,
-        learn_config.reader_input_format)
+        learn_config.reader_input_format, learn_config.train_size)
     eval_dataset = CustomSQuADDataset(
         f"{DATA_DIR}/SQuAD",'eval', reader.tokenize,
-        learn_config.reader_input_format)
+        learn_config.reader_input_format, learn_config.eval_size)
     custom_collate = reader_collate
-elif learn_config.train_dataset == 'triviaqa':
+
+elif learn_config.dataset == 'triviaqa':
     train_dataset = CustomTriviaQADataset(
-        f"{DATA_DIR}/TriviaQA",'train', retriever.tokenize)
+        f"{DATA_DIR}/TriviaQA",'train', retriever.tokenize, 
+        learn_config.train_size)
     eval_dataset = CustomTriviaQADataset(
-        f"{DATA_DIR}/TriviaQA",'eval', retriever.tokenize)
+        f"{DATA_DIR}/TriviaQA",'eval', retriever.tokenize, 
+        learn_config.eval_size)
     custom_collate = join_collate
-elif learn_config.train_dataset == 'msmarco':
+
+elif learn_config.dataset == 'msmarco':
     train_dataset = CustomMSMARCODataset(
-        f"{DATA_DIR}/MSMARCO",'train', retriever.tokenize)
+        f"{DATA_DIR}/MSMARCO",'train', retriever.tokenize, 
+        learn_config.train_size)
     eval_dataset = CustomMSMARCODataset(
-        f"{DATA_DIR}/MSMARCO",'eval', retriever.tokenize)
+        f"{DATA_DIR}/MSMARCO",'eval', retriever.tokenize, 
+        learn_config.eval_size)
     custom_collate = retriever_collate
+
 else:
     assert 'Invalid "train_dataset" value in config-file!'
 
@@ -146,6 +153,7 @@ if learn_config.run_type == 'reader':
 
         elif learn_config.train_type == 'unsupervised':
             pass
+
         else:
             assert 'Invalid "train_type" value in config-file!'
     else:
@@ -170,6 +178,7 @@ elif learn_config.run_type == 'retriever':
 
         else:
             assert 'Invalid "train_type" value in config-file!'
+
     else:
         single_run(learn_config, retriever,  train_loader, eval_loader, 
                 retriever_supervised_train, retriever_supervised_evaluate, 
@@ -180,7 +189,9 @@ elif learn_config.run_type == 'join':
     if learn_config.eval_only:
         criterion = JoinLoss()
         eval_losses, eval_metric = join_evaluate(
-            learn_config, reader, retriever, eval_loader, criterion, reader_metrics, retriever_metrics, 0)
+            learn_config, reader, retriever, eval_loader, 
+            criterion, reader_metrics, retriever_metrics, 0)
+        
     else:
         join_run(learn_config, reader, retriever, train_loader, eval_loader,
                 join_train, join_evaluate, reader_metrics, retriever_metrics)
