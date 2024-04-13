@@ -33,7 +33,7 @@ def retriever_supervised_train(config, retriever, loader, optimizer):
     return losses
 
 #
-def retriever_supervised_evaluate(config, retriever, loader):
+def retriever_supervised_evaluate(config, retriever, loader, metrics_obj, epoch):
     scores = {
         'accuracy': [], 
     }
@@ -53,8 +53,8 @@ def retriever_supervised_evaluate(config, retriever, loader):
             )
         
         loss = retriever.loss(output)
-        predicted = output.argmax(dim=1)
-        target = torch.arange(0, batch['q_ids'][0])
+        predicted = output.argmax(dim=1).detach().cpu()
+        target = torch.arange(0, batch['q_ids'].shape[0]).detach().cpu()
 
         losses.append(loss.item())
         process.set_postfix({"avg_loss": np.mean(losses)})
@@ -71,5 +71,5 @@ def retriever_unsupervised_train(config, retriever, loader, optimizer):
     pass
 
 #
-def retriever_unsupervised_evaluate(config, retriever, loader):
+def retriever_unsupervised_evaluate(config, retriever, loader, metrics_obj, epoch):
     pass

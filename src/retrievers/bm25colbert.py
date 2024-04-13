@@ -22,7 +22,7 @@ class BM25ColBertRetriever:
         self.device = device
 
         print("Loading base ColBERT-model...")
-        self.model = ColBERT(reduced_dim=colbert_reddim)
+        self.model = ColBERT(reduced_dim=colbert_reddim, device=device)
         self.model.to(device)
         self.stage2_tokenizer = ColBertTokenizer
 
@@ -32,11 +32,11 @@ class BM25ColBertRetriever:
         
         if mode == 'train':
             self.loss_objective = nn.CrossEntropyLoss()
-            self.loss = lambda x: self.loss_objective(x, torch.arange(0, x.shape[0]))
+            self.loss = lambda x: self.loss_objective(x, torch.arange(0, x.shape[0], device=self.device))
 
     #
-    def load_bm25_base(self, pickle_file):
-        print("Loading precomputed base...")
+    def load_base(self, pickle_file):
+        print("Loading precomputed bm25-base...")
         with open(pickle_file, 'rb') as bm25result_file:
             self.bm25_model = pickle.load(bm25result_file)
 

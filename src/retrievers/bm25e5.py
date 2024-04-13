@@ -28,15 +28,15 @@ class BM25E5Retriever:
 
         if mode == 'train':
             self.loss_objective = nn.CrossEntropyLoss()
-            self.loss = lambda x: self.loss_objective(x, torch.arange(0, x.shape[0]))
+            self.loss = lambda x: self.loss_objective(x, torch.arange(0, x.shape[0], device=self.device))
 
         self.tokenize = lambda x: self.stage2_tokenizer(
             x, return_tensors='pt', truncation=True, padding=True,
             add_special_tokens=True)
 
     #
-    def load_bm25_base(self, pickle_file):
-        print("Loading precomputed base...")
+    def load_base(self, pickle_file):
+        print("Loading precomputed bm25-base...")
         with open(pickle_file, 'rb') as bm25result_file:
             self.bm25_model = pickle.load(bm25result_file)
 
@@ -45,6 +45,10 @@ class BM25E5Retriever:
         print("Load tuned E5-model...")
         self.model.load_state_dict(torch.load(weights_path))
         self.model.device(self.device)
+
+    #
+    def save_model(self, model_path):
+        torch.save(self.model.state_dict(), model_path)
 
     #
     def texts2documents(self, texts, metadata=[]):

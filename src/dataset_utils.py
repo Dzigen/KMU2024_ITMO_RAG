@@ -8,9 +8,10 @@ class CustomTriviaQADataset(Dataset):
     def __init__(self, path, part, tokenizer):
         self.tokenizer = tokenizer
         self._data = pd.read_csv(f"{path}/{part}.tsv", sep='\t')
+        self.part = part
         
     def __len__(self):
-        return self._data.shape[0]
+        return 1000 if self.part == 'train' else self._data.shape[0]
 
     def __getitem__(self,idx):
         query = self._data['query'][idx]
@@ -51,9 +52,10 @@ class CustomMSMARCODataset(Dataset):
     def __init__(self, path, part, tokenizer):
         self.tokenizer = tokenizer
         self._data = pd.read_csv(f"{path}/{part}.tsv", sep='\t')
+        self.part = part
         
     def __len__(self):
-        return self._data.shape[0]
+        return 1000 if self.part == 'train' else self._data.shape[0]
 
     def __getitem__(self,idx):
         query = self._data['query'][idx]

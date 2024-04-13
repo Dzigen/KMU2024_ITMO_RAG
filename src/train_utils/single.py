@@ -12,10 +12,7 @@ import os
 def param_count(model):
     return sum([p.numel() for name, p in model.named_parameters() if p.requires_grad])
 
-#
-def single_run(config, model_struct,  train_loader, eval_loader, 
-               train_func, evaluate_func, metrics_obj):
-
+def prepare_single_environment(config, model_struct):
     print("Model parameters count: ",param_count(model_struct.model))
 
     print("Init folder to save")
@@ -36,6 +33,24 @@ def single_run(config, model_struct,  train_loader, eval_loader,
     with open(f"{run_dir}/used_config.json", 'w', encoding='utf-8') as fd:
         json.dump(config.__dict__, indent=2, fp=fd)
 
+    return logs_file_path, path_to_best_model_save, path_to_last_model_save
+
+#
+def save_single_log(log_file, epoch, train_l, eval_l, eval_scores, train_t, eval_t):
+    epoch_log = {
+        'epoch': epoch, 'train_loss': train_l,
+        'eval_losss': eval_l, 'scores': eval_scores,
+        'train_time': train_t, 'eval_time': eval_t
+        }
+    with open(log_file,'a',encoding='utf-8') as logfd:
+        logfd.write(str(epoch_log) + '\n')
+
+#
+def single_run(config, model_struct,  train_loader, eval_loader, 
+               train_func, evaluate_func, metrics_obj):
+
+    logs_file_path, path_to_best_model_save, path_to_last_model_save = prepare_single_environment(config, model_struct)
+
     print("Init train objectives")
     optimizer = torch.optim.AdamW(model_struct.model.parameters(), lr=config.lr)
 
@@ -49,15 +64,13 @@ def single_run(config, model_struct,  train_loader, eval_loader,
 
         print(f"Epoch {i+1} start:")
         train_s = time()
-        train_losses = train_func(config, model_struct, train_loader, 
-                                  optimizer)
+        train_losses = train_func(config, model_struct, train_loader, optimizer)
         
         torch.cuda.empty_cache()
         gc.collect()
 
         train_e = time()
-        eval_losses, eval_metrics, = evaluate_func(config, model_struct, eval_loader, 
-                                                  metrics_obj, i)
+        eval_losses, eval_metrics = evaluate_func(config, model_struct, eval_loader, metrics_obj, i)
         eval_e = time()
         
         torch.cuda.empty_cache()
@@ -78,13 +91,9 @@ def single_run(config, model_struct,  train_loader, eval_loader,
             best_score = eval_scores[-1][config.base_score_compare]
 
         # Save train/eval info to logs folder
-        epoch_log = {
-            'epoch': i+1, 'train_loss': ml_train[-1],
-            'eval_losss': ml_eval[-1], 'scores': eval_scores[-1],
-            'train_time': round(train_e - train_s, 5), 'eval_time': round(eval_e - train_e, 5)
-            }
-        with open(logs_file_path,'a',encoding='utf-8') as logfd:
-            logfd.write(str(epoch_log) + '\n')
+        save_single_log(
+            logs_file_path, i+1, ml_train[-1], ml_eval[-1], eval_scores[-1], 
+            round(train_e - train_s, 5), round(eval_e - train_e, 5))
 
     print("===LEARNING END===")
     print("Best score: ", best_score)

@@ -32,6 +32,7 @@ class E5Retriever:
 
     #
     def load_base(self, file_path):
+        print("Loading precomputed e5-base...")
         self.faiss = FAISS.load_local(file_path, self.embeddings,
                                       allow_dangerous_deserialization=True)
 

@@ -9,11 +9,12 @@ OUT_TOKEN_DIM = 768
 ColBertTokenizer = AutoTokenizer.from_pretrained(BASE_COLBERT_ENCODER)
 
 class ColBERT(nn.Module):
-    def __init__(self, reduced_dim, base_model_path=BASE_COLBERT_ENCODER):
+    def __init__(self, reduced_dim, base_model_path=BASE_COLBERT_ENCODER, device='cpu'):
         super(ColBERT, self).__init__()
 
         self.encoder = AutoModel.from_pretrained(base_model_path)
         self.dim_reduce = nn.Linear(OUT_TOKEN_DIM, reduced_dim)
+        self.device = device
 
     def forward(self, q_ids, q_masks, d_ids, d_masks):
         '''
@@ -86,7 +87,7 @@ class ColBERT(nn.Module):
         # print('d_mask - ', d_mask.shape)
         # print()
 
-        batch_scores = torch.tensor([], requires_grad=True)
+        batch_scores = torch.tensor([], requires_grad=True, device=self.device)
         for i in range(q_hidden.shape[0]):
             C = F.cosine_similarity(q_hidden[i].unsqueeze(1).unsqueeze(1), 
                                     d_hidden, dim=-1)
