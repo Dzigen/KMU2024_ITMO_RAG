@@ -2,12 +2,38 @@ import torch
 from datasets import Dataset
 import pandas as pd
 import ast
+import json
+
+class DocDataset(Dataset):
+    def __init__(self, docs):
+        self._data = docs
+
+    def __len__(self):
+        return self._data['input_ids'].shape[0]
+
+    def __getitem__(self, idx):
+        return {
+            'input_ids': self._data['input_ids'][idx],
+            'attention_mask': self._data['attention_mask'][idx],
+        }
+    
+    def __getitems__(self, idxs):
+        return {
+            'input_ids': self._data['input_ids'][idxs],
+            'attention_mask': self._data['attention_mask'][idxs],
+        } 
+        
+
+def custom_collate(data):
+    return data
 
 # for Join train
 class CustomTriviaQADataset(Dataset):
-    def __init__(self, path, part, tokenizer, data_size):
-        self.tokenizer = tokenizer
+    def __init__(self, path, part, retr_tokenizer, read_tokenizer, data_size):
+        self.retr_tokenizer = retr_tokenizer
+        self.read_tokenizer = read_tokenizer
         self._data = pd.read_csv(f"{path}/{part}.tsv", sep='\t').iloc[:data_size,:]
+        self._data['relevant_d_ids'] = self._data['relevant_d_ids'].apply(lambda x: ast.literal_eval(x))
         self.part = part
         self.data_size = data_size
         
@@ -15,26 +41,29 @@ class CustomTriviaQADataset(Dataset):
         return self._data.shape[0]
 
     def __getitem__(self,idx):
-        query = self._data['query'][idx]
+        query = self._data['question'][idx]
         answer = self._data['answer'][idx]
+        relevant_d_id = self._data['relevant_d_ids'][idx]
 
-        q_tokenized = self.tokenizer(query)
-        a_tokenized = self.tokenizer(answer)
+        q_tokenized = self.retr_tokenizer(query)
+        a_tokenized = self.read_tokenizer(answer)
 
         return {
             'q_ids': q_tokenized['input_ids'],
             'q_mask': q_tokenized['attention_mask'],
             'q_text': [query],
             'label': a_tokenized['input_ids'],
-            'label_text': [answer]
+            'label_text': [answer],
+            'relevant_d_ids': [relevant_d_id]
         }
 
     def __getitems__(self, idxs):
-        queries = self._data.iloc[idxs,:]['query'].tolist()
+        queries = self._data.iloc[idxs,:]['question'].tolist()
         answers = self._data.iloc[idxs,:]['answer'].tolist()
+        relevant_d_ids = self._data.iloc[idxs,:]['relevant_d_ids'].tolist()
 
-        q_tokenized = self.tokenizer(queries)
-        a_tokenized = self.tokenizer(answers)
+        q_tokenized = self.retr_tokenizer(queries)
+        a_tokenized = self.read_tokenizer(answers)
         a_tokenized['input_ids'][a_tokenized['input_ids'] == 0] = -100
 
         return {
@@ -42,7 +71,8 @@ class CustomTriviaQADataset(Dataset):
             'q_mask': q_tokenized['attention_mask'],
             'q_text': queries,
             'label': a_tokenized['input_ids'],
-            'label_text': answers
+            'label_text': answers,
+            'relevant_d_ids': relevant_d_ids
         }
 
 def join_collate(data):
@@ -105,8 +135,7 @@ def reader_collate(data):
 class CustomSQuADDataset(Dataset):
     def __init__(self, data_dir, data_part, tokenizer, input_format, data_size):
         self.tokenizer = tokenizer
-        data = pd.read_csv(f"{data_dir}/{data_part}.csv", sep=';')
-        self._data = data[['title','question', 'context','answers','in_base_index']]
+        self._data = pd.read_csv(f"{data_dir}/{data_part}.csv", sep=';')
         self._data['answers'] = self._data['answers'].apply(lambda v: ast.literal_eval(v)['text']) 
         self._data = self._data.drop(self._data[self._data['answers'].map(len) < 1].index).reset_index(drop=True)
         self._data = self._data.iloc[:data_size,:]
@@ -122,7 +151,7 @@ class CustomSQuADDataset(Dataset):
         title = self._data['title'][idx]
         context = self._data['context'][idx]
         
-        input = self.input_format.format(q=query,c=context)
+        input = self.input_format.format(q=query,c=f"{title}.\n{context}")
         tokenized_input = self.tokenizer([input])
         
         label = self._data['answers'][idx][0]

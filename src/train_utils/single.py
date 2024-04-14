@@ -8,18 +8,26 @@ from time import time
 import json
 import os
 
+from src.config import RunConfig
+from typing import Union, List, Tuple, Dict
+from src.readers.fid import FiDReader
+from torch.utils.data import DataLoader
+from src.metrics import ReaderMetrics
+
 #
-def param_count(model):
+def param_count(model: object) -> int:
     return sum([p.numel() for name, p in model.named_parameters() if p.requires_grad])
 
-def prepare_single_environment(config, model_struct):
+#
+def prepare_single_environment(config: RunConfig, model_struct: object) -> Tuple[str,str,str]:
     print("Model parameters count: ",param_count(model_struct.model))
 
     print("Init folder to save")
     run_dir = f"{config.base_dir}/logs/{config.run_name}"
     if os.path.isdir(run_dir):
         print("Error: Директория существует")
-        return
+        raise KeyError
+    
     os.mkdir(run_dir)
     logs_file_path = f'{run_dir}/logs.txt'
     path_to_best_model_save = f"{run_dir}/bestmodel.pt"
@@ -36,7 +44,8 @@ def prepare_single_environment(config, model_struct):
     return logs_file_path, path_to_best_model_save, path_to_last_model_save
 
 #
-def save_single_log(log_file, epoch, train_l, eval_l, eval_scores, train_t, eval_t):
+def save_log(log_file: str, epoch: int, train_l: float, eval_l: float, 
+                    eval_scores: Dict[str,float], train_t: float, eval_t: float) -> None:
     epoch_log = {
         'epoch': epoch, 'train_loss': train_l,
         'eval_losss': eval_l, 'scores': eval_scores,
@@ -46,8 +55,8 @@ def save_single_log(log_file, epoch, train_l, eval_l, eval_scores, train_t, eval
         logfd.write(str(epoch_log) + '\n')
 
 #
-def single_run(config, model_struct,  train_loader, eval_loader, 
-               train_func, evaluate_func, metrics_obj):
+def single_run(config: RunConfig, model_struct: object,  train_loader: DataLoader, eval_loader: DataLoader, train_func: object, 
+               evaluate_func: object, metrics_obj: Union[ReaderMetrics, ReaderMetrics]) -> Tuple[List[float], List[float], float, List[Dict[str, float]]]:
 
     logs_file_path, path_to_best_model_save, path_to_last_model_save = prepare_single_environment(config, model_struct)
 
@@ -61,6 +70,8 @@ def single_run(config, model_struct,  train_loader, eval_loader,
 
     print("===LEARNING START===")
     for i in range(config.epochs):
+        torch.cuda.empty_cache()
+        gc.collect()
 
         print(f"Epoch {i+1} start:")
         train_s = time()
@@ -91,7 +102,7 @@ def single_run(config, model_struct,  train_loader, eval_loader,
             best_score = eval_scores[-1][config.base_score_compare]
 
         # Save train/eval info to logs folder
-        save_single_log(
+        save_log(
             logs_file_path, i+1, ml_train[-1], ml_eval[-1], eval_scores[-1], 
             round(train_e - train_s, 5), round(eval_e - train_e, 5))
 

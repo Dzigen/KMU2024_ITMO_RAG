@@ -4,8 +4,16 @@ from tqdm import tqdm
 import numpy as np
 from sklearn.metrics import accuracy_score
 
+from src.config import RunConfig
+from typing import Union, List, Tuple, Dict
+from src.retrievers.bm25colbert import BM25ColBertRetriever
+from src.retrievers.bm25e5 import BM25E5Retriever
+from torch.utils.data import DataLoader
+from src.metrics import RetrievalMetrics
+
 #
-def retriever_supervised_train(config, retriever, loader, optimizer):
+def retriever_supervised_train(config: RunConfig, retriever: Union[BM25ColBertRetriever, BM25E5Retriever], 
+                               loader: DataLoader, optimizer: object) -> List[float]:
     retriever.model.train()
     losses = []
     process = tqdm(loader)
@@ -33,7 +41,8 @@ def retriever_supervised_train(config, retriever, loader, optimizer):
     return losses
 
 #
-def retriever_supervised_evaluate(config, retriever, loader, metrics_obj, epoch):
+def retriever_supervised_evaluate(config: RunConfig, retriever: Union[BM25ColBertRetriever, BM25E5Retriever], 
+                                  loader: DataLoader, metrics_obj: RetrievalMetrics, epoch: int) -> Tuple[List[float], List[Dict[str,float]]]:
     scores = {
         'accuracy': [], 
     }

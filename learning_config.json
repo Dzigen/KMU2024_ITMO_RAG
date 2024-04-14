@@ -1,32 +1,33 @@
 {
-    "base_dir": "/home/dzigen/Desktop/ITMO/ВКР/КМУ2024",
-    "run_name": "retriever",
+    "base_dir": "/home/ubuntu/KMU2024",
+    "run_name": "reader_squad",
     
-    "run_type": "retriever_colbert_msmarco",
+    "run_type": "reader",
     "eval_only": false,
     "train_type": "supervised",
 
-    "reader_type": "",
-    "base_reader_weights": "",
-    "reader_input_format": "",
+    "reader_type": "fid",
+    "base_reader_weights": "google/flan-t5-base",
+    "reader_input_format": "context: {c}\n\nquestion: {q}",
     "tuned_reader_weights": "", 
+    "reader_gen_ml": 64,
     
-    "retriever_type": "bm25colbert", 
+    "retriever_type": "", 
     "tuned_retriever_weights": "",
     "retriever_frozen": false,
-    "retrieved_cands": 4,
-    "retriever_docs_batch": 4,
+    "retrieved_cands": -1,
+    "retriever_docs_batch": -1,
     "base": "",
 
     "lr": 1e-5,
-    "epochs": 5,
-    "batch_size": 8,
+    "epochs": 10,
+    "batch_size": 16,
     "device": "cuda",
-    "base_score_compare": "accuracy",
+    "base_score_compare": "meteor",
 
-    "dataset": "msmarco",
-    "train_size": 500,
-    "eval_size": 500,
+    "dataset": "squad",
+    "train_size": 20000,
+    "eval_size": 5000,
     
     "to_save": true
 }

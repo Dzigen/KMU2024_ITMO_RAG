@@ -13,13 +13,14 @@ torch.manual_seed(SEED)
 
 ##############################
 
-ROOT_DIR = '/home/dzigen/Desktop/ITMO/ВКР/КМУ2024'
-#ROOT_DIR = '/home/ubuntu/KMU2024'
+#ROOT_DIR = '/home/dzigen/Desktop/ITMO/ВКР/КМУ2024'
+ROOT_DIR = '/home/ubuntu/KMU2024'
 sys.path.insert(0, f"{ROOT_DIR}/src")
 
 CONFIG_FILE_JSON = f'{ROOT_DIR}/learning_config.json'
 DATA_DIR = f'{ROOT_DIR}/data'
-BASES_DIR = f'{ROOT_DIR}/bases'
+BASES_DIR = f'{DATA_DIR}/bases'
+LOGS_DIR = f'{ROOT_DIR}/logs'
 
 from src.config import RunConfig
 from src.train_utils.single import *
@@ -42,12 +43,6 @@ learn_config = RunConfig(**json_obj)
 
 ##############################
 
-# metrics
-retriever_metrics = RetrievalMetrics()
-reader_metrics = ReaderMetrics()
-
-##############################
-
 print("Loading Reader-model...")
 if learn_config.reader_type != '':
 
@@ -57,11 +52,16 @@ if learn_config.reader_type != '':
             device=learn_config.device)
 
     else:
-        assert "Invalid 'reader_type'-value in config!"
+        print("Invalid 'reader_type'-value in config!")
+        raise KeyError
 
     if learn_config.tuned_reader_weights != '':
         print("Loading Tuned weights...")
-        reader.load_model(learn_config.tuned_reader_weights)
+        reader.load_model(f"{LOGS_DIR}/{learn_config.tuned_reader_weights}")
+
+    print("Loading metrics...")
+    reader_metrics = ReaderMetrics()
+
 else:
     print("Reader-model not used!")
 
@@ -85,14 +85,18 @@ if learn_config.retriever_type != '':
             k=learn_config.retrieved_cands,device=learn_config.device)
         
     else:
-        assert "Invalid 'retriever_type'-value in config!"
+        print("Invalid 'retriever_type'-value in config!")
+        raise KeyError
 
     if learn_config.base != '':
         retriever.load_base(f"{BASES_DIR}/{learn_config.base}")
 
     if learn_config.tuned_retriever_weights != '':
         print("Loading Tuned weights...")
-        retriever.load_model(learn_config.tuned_retriever_weights)
+        retriever.load_model(f"{LOGS_DIR}/{learn_config.tuned_retriever_weights}")
+
+    print("Loading metrics...")
+    retriever_metrics = RetrievalMetrics()
 
 else:
     print("Retriever-model not used!")
@@ -112,11 +116,11 @@ if learn_config.dataset == 'squad':
 
 elif learn_config.dataset == 'triviaqa':
     train_dataset = CustomTriviaQADataset(
-        f"{DATA_DIR}/TriviaQA",'train', retriever.tokenize, 
-        learn_config.train_size)
+        f"{DATA_DIR}/TriviaQA",'train', retriever.tokenize,
+        reader.tokenize, learn_config.train_size)
     eval_dataset = CustomTriviaQADataset(
         f"{DATA_DIR}/TriviaQA",'eval', retriever.tokenize, 
-        learn_config.eval_size)
+        reader.tokenize, learn_config.eval_size)
     custom_collate = join_collate
 
 elif learn_config.dataset == 'msmarco':
@@ -129,7 +133,8 @@ elif learn_config.dataset == 'msmarco':
     custom_collate = retriever_collate
 
 else:
-    assert 'Invalid "train_dataset" value in config-file!'
+    print('Invalid "train_dataset" value in config-file!')
+    raise KeyError
 
 train_loader = DataLoader(train_dataset, batch_size=learn_config.batch_size, 
                           collate_fn=custom_collate, shuffle=True, 
@@ -149,13 +154,14 @@ if learn_config.run_type == 'reader':
         if learn_config.train_type == 'supervised':
             logs_fpath, _, _ = prepare_single_environment(learn_config, reader)
             eval_losses, eval_metric = reader_supervised_evaluate(learn_config, reader, eval_loader, reader_metrics, 0)
-            save_single_log(logs_fpath, 0, -1, round(np.mean(eval_losses),5), eval_metric, -1, -1)
+            save_log(logs_fpath, 0, -1, round(np.mean(eval_losses),5), eval_metric, -1, -1)
 
         elif learn_config.train_type == 'unsupervised':
             pass
 
         else:
-            assert 'Invalid "train_type" value in config-file!'
+            print('Invalid "train_type" value in config-file!')
+            raise KeyError
     else:
         single_run(learn_config, reader,  train_loader, eval_loader, 
                 reader_supervised_train, reader_supervised_evaluate, 
@@ -168,16 +174,17 @@ elif learn_config.run_type == 'retriever':
             logs_fpath, _, _ = prepare_single_environment(learn_config, retriever)
             eval_losses, eval_metric = retriever_supervised_evaluate(
                 learn_config, retriever, eval_loader, retriever_metrics, 0)
-            save_single_log(logs_fpath, 0, -1, round(np.mean(eval_losses),5), eval_metric, -1, -1)
+            save_log(logs_fpath, 0, -1, round(np.mean(eval_losses),5), eval_metric, -1, -1)
 
         elif learn_config.train_type == 'unsupervised':
             logs_fpath, _, _ = prepare_single_environment(learn_config, retriever)
             eval_losses, eval_metric = retriever_unsupervised_evaluate(
                 learn_config, retriever, eval_loader, retriever_metrics, 0)
-            save_single_log(logs_fpath, 0, -1, round(np.mean(eval_losses),5), eval_metric, -1, -1)
+            save_log(logs_fpath, 0, -1, round(np.mean(eval_losses),5), eval_metric, -1, -1)
 
         else:
-            assert 'Invalid "train_type" value in config-file!'
+            print('Invalid "train_type" value in config-file!')
+            raise KeyError
 
     else:
         single_run(learn_config, retriever,  train_loader, eval_loader, 
@@ -188,10 +195,12 @@ elif learn_config.run_type == 'join':
 
     if learn_config.eval_only:
         criterion = JoinLoss()
+        logs_fpath, _, _, _, _ = prepare_join_environment(learn_config, reader, retriever)
         eval_losses, eval_metric = join_evaluate(
             learn_config, reader, retriever, eval_loader, 
             criterion, reader_metrics, retriever_metrics, 0)
-        
+        save_log(logs_fpath, 0, -1, round(np.mean(eval_losses),5), eval_metric, -1, -1)
+    
     else:
         join_run(learn_config, reader, retriever, train_loader, eval_loader,
                 join_train, join_evaluate, reader_metrics, retriever_metrics)

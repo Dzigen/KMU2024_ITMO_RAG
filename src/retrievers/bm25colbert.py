@@ -10,6 +10,7 @@ import gc
 import torch.nn as nn
 
 from .archs.colbert_model import ColBERT, ColBertTokenizer
+from src.dataset_utils import DocDataset, custom_collate
 
 class BM25ColBertRetriever:
     def __init__(self, bm25_candidates=256, k=4, colbert_reddim=64, 
@@ -32,25 +33,27 @@ class BM25ColBertRetriever:
         
         if mode == 'train':
             self.loss_objective = nn.CrossEntropyLoss()
-            self.loss = lambda x: self.loss_objective(x, torch.arange(0, x.shape[0], device=self.device))
+            self.loss = lambda x: self.loss_objective(
+                x, torch.arange(0, x.shape[0], device=self.device))
 
     #
     def load_base(self, pickle_file):
         print("Loading precomputed bm25-base...")
         with open(pickle_file, 'rb') as bm25result_file:
             self.bm25_model = pickle.load(bm25result_file)
+        self.bm25_model.k = self.bm25_cands
 
     #
     def load_model(self, weights_path):
         print("Load tuned ColBERT-model...")
         self.model.load_state_dict(torch.load(weights_path))
-        self.model.device(self.device)
+        self.model.to(self.device)
 
     #
     def save_model(self, model_path):
         torch.save(self.model.state_dict(), model_path)
 
-   #
+    #
     def texts2documents(self, texts, metadata=[]):
         mdata = []
         for i in tqdm(range(len(texts))):
@@ -104,15 +107,15 @@ class BM25ColBertRetriever:
     #
     def bm25_retrieve(self, query):
         relevant_documents = self.bm25_model.get_relevant_documents(query)
-        text_docs = np.array([doc.page_content for doc in relevant_documents])
-        tokenized_docs = [doc.metadata['colb_tokenized'] for doc in relevant_documents]
-        metadata = np.array([doc.metadata for doc in relevant_documents])
+        text_docs = [doc.page_content for doc in relevant_documents]
+        tokenized_docs = self.tokenize(text_docs)
+        metadata = [doc.metadata for doc in relevant_documents]
         
         docs_dataset = DocDataset(tokenized_docs)
         docs_laoder = DataLoader(docs_dataset, batch_size=self.docs_bs, 
                                  collate_fn=custom_collate, shuffle=False)
 
-        return text_docs, docs_laoder, metadata
+        return np.array(text_docs), docs_laoder, np.array(metadata)
 
     #
     def colbert_retrieve(self, tokenized_query, bm25_docs, docs_loader, docs_metadata):
@@ -129,31 +132,9 @@ class BM25ColBertRetriever:
             
             flat_scores = torch.cat((flat_scores, scores.detach().view(-1)), dim=-1)
 
+        #print("BM25COLBERT flat scores: ", flat_scores.shape)
+
         _, indices = torch.sort(flat_scores, descending=True)
         best_ids = indices[:self.colbert_cands]
 
         return bm25_docs[best_ids], flat_scores.take(best_ids), docs_metadata[best_ids]
-    
-class DocDataset(Dataset):
-    def __init__(self, docs):
-        self._data = docs
-
-    def __len__(self):
-        return len(self._data)
-
-    def __getitem__(self, idx):
-        return self._data[idx]
-    
-    def __getitems__(self, idxs):
-        return [self.__getitem__(idx) for idx in idxs]
-        
-
-def custom_collate(data):
-
-    input_ids = torch.cat([item['input_ids'] for item in data], 0)
-    attention_mask = torch.cat([item['attention_mask'] for item in data], 0)
-
-    return {
-        "input_ids": input_ids, 
-        "attention_mask": attention_mask
-    }

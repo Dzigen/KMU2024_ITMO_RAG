@@ -41,7 +41,7 @@ class RetrievalMetrics:
         return round(0 if first_occur.size == 0 else 1 / (first_occur[0] + 1), 5)
         
     def MRR(self, predicted_cands, gold_cands):
-        return np.mean(self.reciprocal_ranks(predicted_cands, gold_cands))
+        return np.mean(self.reciprocal_rank(predicted_cands, gold_cands))
 
 #
 class ReaderMetrics:

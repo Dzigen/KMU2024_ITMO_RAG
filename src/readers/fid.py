@@ -10,7 +10,7 @@ class FiDReader:
         self.device = device
 
         self.tokenize = lambda x: self.tokenizer(
-            x, max_length=511, return_tensors='pt', truncation=True, padding=True,
+            x, return_tensors='pt', truncation=True, padding=True,
             add_special_tokens=True)
 
         self.model = FiDT5(t5.config)

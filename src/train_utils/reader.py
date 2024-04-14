@@ -8,7 +8,14 @@ from time import time
 import json
 import os
 
-def reader_supervised_evaluate(config, reader, loader, metrics_obj, epoch):
+from src.config import RunConfig
+from typing import Union, List, Tuple, Dict
+from src.readers.fid import FiDReader
+from torch.utils.data import DataLoader
+from src.metrics import ReaderMetrics
+
+def reader_supervised_evaluate(config: RunConfig, reader: Union[FiDReader], loader: DataLoader, 
+                               metrics_obj: ReaderMetrics, epoch: int) -> Tuple[List[float], Dict[str, float]]:
     reader.model.eval()
     losses = []
 
@@ -37,7 +44,8 @@ def reader_supervised_evaluate(config, reader, loader, metrics_obj, epoch):
 
         output = reader.model.generate(input_ids=device_b['ids'], 
                                 attention_mask=device_b['mask'], 
-                                max_length=64, eos_token_id=reader.tokenizer.eos_token_id)
+                                max_length=config.reader_gen_ml, 
+                                eos_token_id=reader.tokenizer.eos_token_id)
 
         predicted = reader.tokenizer.batch_decode(output, skip_special_tokens=True)
 
@@ -62,7 +70,8 @@ def reader_supervised_evaluate(config, reader, loader, metrics_obj, epoch):
 
     return losses, scores
 
-def reader_supervised_train(config, reader, loader, optimizer):
+def reader_supervised_train(config: RunConfig, reader: Union[FiDReader], 
+                            loader: DataLoader, optimizer: object) -> List[float]:
     reader.model.train()
     losses = []
     process = tqdm(loader)

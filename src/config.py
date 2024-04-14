@@ -18,6 +18,7 @@ class RunConfig:
     epochs: int = 10
     batch_size: int = 2
     device: str = 'cpu' # 'cuda' / 'cpu'
+    reader_gen_ml: int = 64
     retrieved_cands: int = 4 # number of candidates to retriever for reader
     retriever_docs_batch: int = 4 # from stage1 to stage2
     dataset: str = 'squad'
