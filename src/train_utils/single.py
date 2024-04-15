@@ -16,7 +16,10 @@ from src.metrics import ReaderMetrics
 
 #
 def param_count(model: object) -> int:
-    return sum([p.numel() for name, p in model.named_parameters() if p.requires_grad])
+    all = sum([p.numel() for name, p in model.named_parameters()])
+    trainable = sum([p.numel() for name, p in model.named_parameters() if p.requires_grad])
+
+    return {"all": all, "trainable": trainable}
 
 #
 def prepare_single_environment(config: RunConfig, model_struct: object) -> Tuple[str,str,str]:
@@ -33,13 +36,20 @@ def prepare_single_environment(config: RunConfig, model_struct: object) -> Tuple
     path_to_best_model_save = f"{run_dir}/bestmodel.pt"
     path_to_last_model_save = f"{run_dir}/lastmodel.pt"
 
-    print("Saving used nn-arch")
+    print("Saving used nn-arch...")
     with open(f"{run_dir}/used_arch.txt", 'w', encoding='utf-8') as fd:
         fd.write(model_struct.model.__str__())
 
-    print("Saving used config")
+    print("Saving used config...")
     with open(f"{run_dir}/used_config.json", 'w', encoding='utf-8') as fd:
         json.dump(config.__dict__, indent=2, fp=fd)
+
+    print("Saving grad info...")
+    model_grad_info = ""
+    for name, p in  model_struct.model.named_parameters():
+        model_grad_info += f"{name} {p.requires_grad}\n"
+    with open(f"{run_dir}/model_gradinfo.txt", 'w', encoding='utf-8') as fd:
+        fd.write(model_grad_info)
 
     return logs_file_path, path_to_best_model_save, path_to_last_model_save
 

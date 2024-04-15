@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Union
 
 @dataclass
 class RunConfig:
@@ -21,9 +22,12 @@ class RunConfig:
     reader_gen_ml: int = 64
     retrieved_cands: int = 4 # number of candidates to retriever for reader
     retriever_docs_batch: int = 4 # from stage1 to stage2
+    retriever_bm25_cands: int = 256
     dataset: str = 'squad'
     train_size: int = 1000
     eval_size: int = 1000
     base: str = '' # 'squad' / 'nq' / 'triviaqa'
     base_score_compare: str = 'meteor'
     to_save: bool = True
+    reader_layers_toupdate: Union[list,str] = 'all' #
+    retriever_layers_toupdate: Union[list,str] = 'all' #

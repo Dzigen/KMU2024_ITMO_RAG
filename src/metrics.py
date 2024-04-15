@@ -45,11 +45,13 @@ class RetrievalMetrics:
 
 #
 class ReaderMetrics:
-    def __init__(self):
+    def __init__(self, base_dir):
         self.rouge_obj = ROUGEScore()
         self.bleu_obj = BLEUScore(n_gram=2)
-        self.meteor_obj = evaluate.load('meteor')
-        self.em_obj = evaluate.load("exact_match")
+        print("Loading Meteor...")
+        self.meteor_obj = evaluate.load(f"{base_dir}/src/metrics/meteor")
+        print("Loading ExactMatch")
+        self.em_obj = evaluate.load(f"{base_dir}/src/metrics/exact_match")
 
     def rouge(self, predicted, targets):
         accum = []

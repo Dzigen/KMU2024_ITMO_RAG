@@ -19,8 +19,6 @@ from torch.utils.data import DataLoader
 from src.metrics import RetrievalMetrics, ReaderMetrics
 from src.train_utils.single import save_log
 
-
-
 #
 class JoinLoss:
     def __init__(self, r=1) -> None:
@@ -76,7 +74,6 @@ def prepare_join_environment(config: RunConfig, reader: object, retriever: objec
     print("Reader-model parameters count: ",param_count(reader.model))
     if not config.retriever_frozen:
         print("Retriever-model parameters count: ",param_count(retriever.model))
-    
 
     print("Init folder to save")
     run_dir = f"{config.base_dir}/logs/{config.run_name}"
@@ -91,21 +88,35 @@ def prepare_join_environment(config: RunConfig, reader: object, retriever: objec
     readbmodel_spath = f"{run_dir}/reader_bestmodel.pt"
     readlmodel_spath = f"{run_dir}/reader_lastmodel.pt"
 
-    print("Saving used nn-arch")
+    print("Saving used nn-arch...")
     with open(f"{run_dir}/used_reader_arch.txt", 'w', encoding='utf-8') as fd:
         fd.write(reader.model.__str__())
     with open(f"{run_dir}/used_retriever_arch.txt", 'w', encoding='utf-8') as fd:
         fd.write(retriever.model.__str__())
 
-    print("Saving used config")
+    print("Saving grad info...")
+    reader_grad_info, retriever_grad_info = "", ""
+    for name, p in  reader.model.named_parameters():
+        reader_grad_info += f"{name} {p.requires_grad}\n"
+    with open(f"{run_dir}/reader_gradinfo.txt", 'w', encoding='utf-8') as fd:
+        fd.write(reader_grad_info)
+    for name, p in  retriever.model.named_parameters():
+        retriever_grad_info += f"{name} {p.requires_grad}\n"
+    with open(f"{run_dir}/retriever_gradinfo.txt", 'w', encoding='utf-8') as fd:
+        fd.write(retriever_grad_info)
+
+    print("Saving used config...")
     with open(f"{run_dir}/used_config.json", 'w', encoding='utf-8') as fd:
         json.dump(config.__dict__, indent=2, fp=fd)
 
     return logs_file_path, retbmodel_spath, retlmodel_spath, readbmodel_spath, readlmodel_spath 
 
 #
-def param_count(model: object) -> float:
-    return sum([p.numel() for name, p in model.named_parameters() if p.requires_grad])
+def param_count(model: object) -> int:
+    all = sum([p.numel() for name, p in model.named_parameters()])
+    trainable = sum([p.numel() for name, p in model.named_parameters() if p.requires_grad])
+
+    return {"all": all, "trainable": trainable}
 
 #
 def join_run(config: RunConfig, reader: Union[FiDReader], retriever: Union[BM25E5Retriever, BM25ColBertRetriever], 
@@ -205,11 +216,12 @@ def join_evaluate(config: RunConfig, reader: Union[FiDReader], retriever: Union[
 
         q_ids = batch['q_ids'].to(config.device, non_blocking=True)
         q_masks = batch['q_mask'].to(config.device, non_blocking=True)
+        batch['label'] = batch['label'].to(config.device)
 
         prep_txts = []
         doc_bsz = config.batch_size
         cands_k = config.retrieved_cands
-        cands_scores = torch.tensor([], requires_grad=True)
+        cands_scores = torch.tensor([], requires_grad=True, device=config.device)
         for i in range(len(batch['q_text'])):
             texts, k_scores, metadata = retriever.search(
                 batch['q_text'][i], {'input_ids': q_ids[i].view(1,-1), 
@@ -239,7 +251,7 @@ def join_evaluate(config: RunConfig, reader: Union[FiDReader], retriever: Union[
                 input_ids=tokenized_txts['input_ids'].view(doc_bsz, cands_k, -1), 
                 labels=batch['label'], # doc_bsz x seq_len
                 attention_mask=tokenized_txts['attention_mask'].view(doc_bsz, cands_k, -1))
-            print("reader topk_shape: ", output.logits.shape) # doc_bsz x seq_len x vocab_size 
+            #print("reader topk_shape: ", output.logits.shape) # doc_bsz x seq_len x vocab_size 
             
             #
             loss = output.loss
@@ -250,7 +262,7 @@ def join_evaluate(config: RunConfig, reader: Union[FiDReader], retriever: Union[
                 input_ids=tokenized_txts['input_ids'].view(doc_bsz*cands_k, 1, -1), 
                 attention_mask=tokenized_txts['attention_mask'].view(doc_bsz*cands_k, 1, -1),
                 labels=batch['label'].repeat(1, cands_k).view(doc_bsz*cands_k,-1))
-            print("reader k_shape: ", output.logits.shape) # doc_bsz * cands_k x seq_len x vocab_size 
+            #print("reader k_shape: ", output.logits.shape) # doc_bsz * cands_k x seq_len x vocab_size 
 
             #
             seq_len = output.logits.shape[1]
@@ -267,7 +279,7 @@ def join_evaluate(config: RunConfig, reader: Union[FiDReader], retriever: Union[
                 input_ids=tokenized_txts['input_ids'].view(doc_bsz, cands_k, -1), 
                 labels=batch['label'], 
                 attention_mask=tokenized_txts['attention_mask'].view(doc_bsz, cands_k, -1))
-            print("reader topk_shape: ", output.logits.shape) # doc_bsz x seq_len x vocab_size 
+            #print("reader topk_shape: ", output.logits.shape) # doc_bsz x seq_len x vocab_size 
 
             reader_topk_loss = output.loss
             
@@ -327,11 +339,12 @@ def join_train(config: RunConfig, reader: Union[FiDReader],
 
         q_ids = batch['q_ids'].to(config.device, non_blocking=True)
         q_masks = batch['q_mask'].to(config.device, non_blocking=True)
+        batch['label'] = batch['label'].to(config.device)
 
         prep_txts = []
         doc_bsz = config.batch_size
         cands_k = config.retrieved_cands
-        cands_scores = torch.tensor([], requires_grad=True)
+        cands_scores = torch.tensor([], requires_grad=True, device=config.device)
         for i in range(len(batch['q_text'])):
             texts, k_scores, _ = retriever.search(
                 batch['q_text'][i], {'input_ids': q_ids[i].unsqueeze(0), 
@@ -346,7 +359,7 @@ def join_train(config: RunConfig, reader: Union[FiDReader],
         tokenized_txts = reader.tokenize(prep_txts)
         tokenized_txts = {k: v.to(config.device) for k, v in tokenized_txts.items()}
 
-        print("tokenized_txts ids: ", tokenized_txts['input_ids'].shape)
+        #print("tokenized_txts ids: ", tokenized_txts['input_ids'].shape)
 
         if config.retriever_frozen:
 
@@ -355,7 +368,7 @@ def join_train(config: RunConfig, reader: Union[FiDReader],
                 input_ids=tokenized_txts['input_ids'].view(doc_bsz, cands_k, -1), 
                 labels=batch['label'], 
                 attention_mask=tokenized_txts['attention_mask'].view(doc_bsz, cands_k, -1))
-            print("reader topk_shape: ", output.logits.shape) # doc_bsz x seq_len x vocab_size 
+            #print("reader topk_shape: ", output.logits.shape) # doc_bsz x seq_len x vocab_size 
 
             #
             loss = output.loss
@@ -367,7 +380,7 @@ def join_train(config: RunConfig, reader: Union[FiDReader],
                 input_ids=tokenized_txts['input_ids'].view(doc_bsz*cands_k, 1, -1), 
                 attention_mask=tokenized_txts['attention_mask'].view(doc_bsz*cands_k, 1, -1),
                 labels=batch['label'].repeat(1, cands_k).view(doc_bsz*cands_k,-1))
-            print("reader k_states: ", output.logits.shape) # doc_bsz * k_cands x seq_len x vocab_size
+            #print("reader k_states: ", output.logits.shape) # doc_bsz * k_cands x seq_len x vocab_size
 
             #
             seq_len = output.logits.shape[1]
@@ -384,14 +397,14 @@ def join_train(config: RunConfig, reader: Union[FiDReader],
                 input_ids=tokenized_txts['input_ids'].view(doc_bsz, cands_k, -1), 
                 labels=batch['label'], 
                 attention_mask=tokenized_txts['attention_mask'].view(doc_bsz, cands_k, -1))
-            print("reader topk_shape: ", output.logits.shape) # doc_bsz x seq_len x vocab_size 
+            #print("reader topk_shape: ", output.logits.shape) # doc_bsz x seq_len x vocab_size 
 
             #
             reader_topk_loss = output.loss
 
             # Compute Join-loss
             loss = criterion(reader_topk_loss, reader_k_loss, cands_scores.view(doc_bsz, cands_k))
-            print("Computed join-loss: ", loss)
+            #print("Computed join-loss: ", loss)
 
         loss.backward()
         optimizer.step()

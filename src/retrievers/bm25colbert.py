@@ -80,20 +80,21 @@ class BM25ColBertRetriever:
     #
     def search(self, query, tokenized_query=None):
         # stage1
-        print("Retrieving documents with BM25...")
+        #print("Retrieving documents with BM25...")
         bm25_docs, tokenized_docs, docs_metadata = self.bm25_retrieve(query)
 
         # stage2
-        print("Re-ranking documents with ColBERT...")
+        #print("Re-ranking documents with ColBERT...")
         self.model.eval()
         if tokenized_query is None:
             tokenized_query = self.tokenize(query)
+
         colbert_docs, scores, docs_metadata = self.colbert_retrieve(
             tokenized_query, bm25_docs, tokenized_docs, docs_metadata)
 
         # stage3
         if self.mode == 'eval':
-            print("Filtering irrelevant document by threshold...")
+            #print("Filtering irrelevant document by threshold...")
             filtered_indexes = self.filter_by_score(scores)
 
             return colbert_docs[filtered_indexes], scores.take(filtered_indexes), docs_metadata[filtered_indexes]
@@ -119,22 +120,25 @@ class BM25ColBertRetriever:
 
     #
     def colbert_retrieve(self, tokenized_query, bm25_docs, docs_loader, docs_metadata):
-        flat_scores = torch.tensor([], requires_grad=False)
+        flat_scores = torch.tensor([], requires_grad=True, device=self.device)
 
-        for doc_batch in tqdm(docs_loader):
+        for doc_batch in docs_loader:
             # print("doc_batch - ", doc_batch['input_ids'].shape)
 
             gc.collect()
             torch.cuda.empty_cache()
 
+            doc_batch = {k: v.to(self.device) for k,v in doc_batch.items()}
+
             scores = self.model(tokenized_query['input_ids'], tokenized_query['attention_mask'],
                                     doc_batch['input_ids'], doc_batch['attention_mask'])
             
-            flat_scores = torch.cat((flat_scores, scores.detach().view(-1)), dim=-1)
+            flat_scores = torch.cat((flat_scores, scores.view(-1)), dim=-1)
 
         #print("BM25COLBERT flat scores: ", flat_scores.shape)
 
         _, indices = torch.sort(flat_scores, descending=True)
         best_ids = indices[:self.colbert_cands]
+        best_ids_cpu = best_ids.cpu()
 
-        return bm25_docs[best_ids], flat_scores.take(best_ids), docs_metadata[best_ids]
+        return bm25_docs[best_ids_cpu], flat_scores.take(best_ids), docs_metadata[best_ids_cpu]

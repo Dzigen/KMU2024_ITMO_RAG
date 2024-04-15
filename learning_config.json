@@ -1,33 +1,36 @@
 {
     "base_dir": "/home/ubuntu/KMU2024",
-    "run_name": "reader_squad",
+    "run_name": "join_colbert_fid_triviaqa",
     
-    "run_type": "reader",
+    "run_type": "join",
     "eval_only": false,
     "train_type": "supervised",
 
     "reader_type": "fid",
     "base_reader_weights": "google/flan-t5-base",
     "reader_input_format": "context: {c}\n\nquestion: {q}",
-    "tuned_reader_weights": "", 
+    "tuned_reader_weights": "reader_fid_squad/bestmodel.pt", 
     "reader_gen_ml": 64,
+    "reader_layers_toupdate": [11,10,9],
     
-    "retriever_type": "", 
-    "tuned_retriever_weights": "",
+    "retriever_type": "bm25colbert", 
+    "tuned_retriever_weights": "retriever_colbert_msmarco/bestmodel.pt",
     "retriever_frozen": false,
-    "retrieved_cands": -1,
-    "retriever_docs_batch": -1,
-    "base": "",
+    "retriever_layers_toupdate": [11,10,9],
+    "retrieved_cands": 3,
+    "retriever_docs_batch": 32,
+    "retriever_bm25_cands": 128,
+    "base": "bm25_triviaqa_base3.pkl",
 
     "lr": 1e-5,
-    "epochs": 10,
-    "batch_size": 16,
+    "epochs": 3,
+    "batch_size": 2,
     "device": "cuda",
     "base_score_compare": "meteor",
 
-    "dataset": "squad",
-    "train_size": 20000,
-    "eval_size": 5000,
+    "dataset": "triviaqa",
+    "train_size": 5000,
+    "eval_size": 1000,
     
     "to_save": true
 }

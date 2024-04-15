@@ -6,6 +6,7 @@ import random
 from time import time
 import json
 from torch.utils.data import DataLoader
+import re
 
 SEED=42
 random.seed(SEED)
@@ -13,8 +14,8 @@ torch.manual_seed(SEED)
 
 ##############################
 
-#ROOT_DIR = '/home/dzigen/Desktop/ITMO/ВКР/КМУ2024'
-ROOT_DIR = '/home/ubuntu/KMU2024'
+#ROOT_DIR = "/home/dzigen/Desktop/ITMO/ВКР/КМУ2024"
+ROOT_DIR = "/home/ubuntu/KMU2024"
 sys.path.insert(0, f"{ROOT_DIR}/src")
 
 CONFIG_FILE_JSON = f'{ROOT_DIR}/learning_config.json'
@@ -60,7 +61,27 @@ if learn_config.reader_type != '':
         reader.load_model(f"{LOGS_DIR}/{learn_config.tuned_reader_weights}")
 
     print("Loading metrics...")
-    reader_metrics = ReaderMetrics()
+    reader_metrics = ReaderMetrics(learn_config.base_dir)
+
+
+    if (type(learn_config.reader_layers_toupdate) is str 
+        and learn_config.reader_layers_toupdate == 'all'):
+        print("All layers of reader-model will be updated!")
+    elif type(learn_config.reader_layers_toupdate) is list:
+        learn_config.reader_layers_toupdate = list(map(lambda x: "decoder.block."+str(x),learn_config.reader_layers_toupdate))
+        learn_config.reader_layers_toupdate += ["decoder.final_layer_norm.weight", "lm_head.weight"]
+        
+        for name, param in reader.model.named_parameters():
+            flag = False
+            for layer in learn_config.reader_layers_toupdate:
+                if len(re.findall(layer, name)):
+                    flag = True
+                    param.requires_grad = True
+                    break
+            if not flag:
+                 param.requires_grad = False                    
+    else:
+        print("Invalid 'retriever_layers_toupdate'-value in config!")
 
 else:
     print("Reader-model not used!")
@@ -72,17 +93,21 @@ if learn_config.retriever_type != '':
     if learn_config.retriever_type == 'bm25e5':
         retriever = BM25E5Retriever(
             k=learn_config.retrieved_cands, device=learn_config.device,
-            mode='eval' if learn_config.retriever_frozen else 'train')
+            mode='eval' if learn_config.retriever_frozen else 'train',
+            docs_bs=learn_config.retriever_docs_batch,
+            bm25_candidates=learn_config.retriever_bm25_cands)
         
     elif learn_config.retriever_type == 'bm25colbert':
         retriever = BM25ColBertRetriever(
             k=learn_config.retrieved_cands, device=learn_config.device,
             mode='eval' if learn_config.retriever_frozen else 'train',
-            docs_bs=learn_config.retriever_docs_batch)
+            docs_bs=learn_config.retriever_docs_batch, 
+            bm25_candidates=learn_config.retriever_bm25_cands)
 
     elif learn_config.retriever_type == 'e5':
         retriever = E5Retriever(
-            k=learn_config.retrieved_cands,device=learn_config.device)
+            k=learn_config.retrieved_cands,
+            device=learn_config.device)
         
     else:
         print("Invalid 'retriever_type'-value in config!")
@@ -94,6 +119,25 @@ if learn_config.retriever_type != '':
     if learn_config.tuned_retriever_weights != '':
         print("Loading Tuned weights...")
         retriever.load_model(f"{LOGS_DIR}/{learn_config.tuned_retriever_weights}")
+
+    if (type(learn_config.retriever_layers_toupdate) is str 
+        and learn_config.retriever_layers_toupdate == 'all'):
+        print("All layers of retriever-model will be updated!")
+    elif type(learn_config.retriever_layers_toupdate) is list:
+        learn_config.retriever_layers_toupdate = list(map(lambda x: "encoder.layer."+str(x),learn_config.retriever_layers_toupdate))
+        learn_config.retriever_layers_toupdate += ["encoder.pooler.dense.weight", "encoder.pooler.dense.bias","dim_reduce.weight","dim_reduce.bias"]
+        for name, param in retriever.model.named_parameters():
+            flag = False
+            for layer in learn_config.retriever_layers_toupdate:
+                if len(re.findall(layer, name)):
+                    flag = True
+                    param.requires_grad = True
+                    break
+            if not flag:
+                 param.requires_grad = False                    
+    else:
+        print("Invalid 'retriever_layers_toupdate'-value in config!")
+
 
     print("Loading metrics...")
     retriever_metrics = RetrievalMetrics()
