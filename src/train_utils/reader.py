@@ -76,11 +76,9 @@ def reader_supervised_train(config: RunConfig, reader: Union[FiDReader],
     losses = []
     process = tqdm(loader)
     batch_keys = ['ids', 'mask', 'label']
-    for batch in process:
+    for step, batch in enumerate(process):
         gc.collect()
         torch.cuda.empty_cache()
-
-        optimizer.zero_grad()
 
         batch = {k: batch[k].to(config.device) for k in batch_keys}
 
@@ -90,10 +88,14 @@ def reader_supervised_train(config: RunConfig, reader: Union[FiDReader],
             input_ids=batch['ids'], attention_mask=batch['mask'], 
             labels=batch['label'])
 
-        output.loss.backward()
-        optimizer.step()
-
         losses.append(output.loss.item())
         process.set_postfix({"avg_loss": np.mean(losses)})
+
+        loss = output.loss / config.grad_accum_steps
+        loss.backward()
+
+        if ((step+1)%config.grad_accum_steps) == 0:
+            optimizer.step()
+            optimizer.zero_grad()
 
     return losses

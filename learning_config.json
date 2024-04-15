@@ -18,7 +18,7 @@
     "retriever_frozen": false,
     "retriever_layers_toupdate": [11,10,9],
     "retrieved_cands": 3,
-    "retriever_docs_batch": 32,
+    "retriever_docs_batch": 64,
     "retriever_bm25_cands": 128,
     "base": "bm25_triviaqa_base3.pkl",
 
@@ -27,6 +27,7 @@
     "batch_size": 2,
     "device": "cuda",
     "base_score_compare": "meteor",
+    "grad_accum_steps": 4,
 
     "dataset": "triviaqa",
     "train_size": 5000,

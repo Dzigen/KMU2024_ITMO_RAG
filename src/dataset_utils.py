@@ -62,8 +62,15 @@ class CustomTriviaQADataset(Dataset):
         answers = self._data.iloc[idxs,:]['answer'].tolist()
         relevant_d_ids = self._data.iloc[idxs,:]['relevant_d_ids'].tolist()
 
-        q_tokenized = self.retr_tokenizer(queries)
-        a_tokenized = self.read_tokenizer(answers)
+        try:
+            q_tokenized = self.retr_tokenizer(queries)
+            a_tokenized = self.read_tokenizer(answers)
+        except ValueError as e:
+            print(idxs)
+            print(queries)
+            print(answers)
+            raise ValueError
+        
         a_tokenized['input_ids'][a_tokenized['input_ids'] == 0] = -100
 
         return {

@@ -18,7 +18,7 @@ def retriever_supervised_train(config: RunConfig, retriever: Union[BM25ColBertRe
     losses = []
     process = tqdm(loader)
     batch_keys = ['q_ids', 'q_mask', 'd_ids', 'd_mask']
-    for batch in process:
+    for step, batch in enumerate(process):
         gc.collect()
         torch.cuda.empty_cache()
 
@@ -30,13 +30,17 @@ def retriever_supervised_train(config: RunConfig, retriever: Union[BM25ColBertRe
             q_ids=batch['q_ids'], q_masks=batch['q_mask'],
             d_ids=batch['d_ids'], d_masks=batch['d_mask']
             )
-        
-        loss = retriever.loss(output)
-        loss.backward()
-        optimizer.step()
 
+        loss = retriever.loss(output)
         losses.append(loss.item())
         process.set_postfix({"avg_loss": np.mean(losses)})
+        
+        loss = loss / config.grad_accum_steps
+        loss.backward()
+
+        if ((step+1)%config.grad_accum_steps) == 0:
+            optimizer.step()
+            optimizer.zero_grad()
 
     return losses
 

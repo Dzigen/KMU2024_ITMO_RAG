@@ -328,10 +328,11 @@ def join_train(config: RunConfig, reader: Union[FiDReader],
     
     #
     losses = []
+    optimizer.zero_grad()
 
     #
     process = tqdm(loader)
-    for batch in process:
+    for step, batch in enumerate(process):
         gc.collect()
         torch.cuda.empty_cache()
 
@@ -406,11 +407,15 @@ def join_train(config: RunConfig, reader: Union[FiDReader],
             loss = criterion(reader_topk_loss, reader_k_loss, cands_scores.view(doc_bsz, cands_k))
             #print("Computed join-loss: ", loss)
 
-        loss.backward()
-        optimizer.step()
-
         losses.append(loss.item())
         process.set_postfix({"avg_loss": np.mean(losses)})
+
+        loss = loss / config.grad_accum_steps
+        loss.backward()
+
+        if ((step+1)%config.grad_accum_steps) == 0:
+            optimizer.step()
+            optimizer.zero_grad()
 
     return losses
 

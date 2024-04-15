@@ -31,3 +31,4 @@ class RunConfig:
     to_save: bool = True
     reader_layers_toupdate: Union[list,str] = 'all' #
     retriever_layers_toupdate: Union[list,str] = 'all' #
+    grad_accum_steps: int = 1
