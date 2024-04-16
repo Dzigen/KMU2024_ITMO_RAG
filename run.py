@@ -181,7 +181,7 @@ else:
     raise KeyError
 
 train_loader = DataLoader(train_dataset, batch_size=learn_config.batch_size, 
-                          collate_fn=custom_collate, shuffle=True, 
+                          collate_fn=custom_collate, shuffle=False, 
                           num_workers=2, drop_last=True)
 eval_loader = DataLoader(eval_dataset, batch_size=learn_config.batch_size,
                          collate_fn=custom_collate, shuffle=False, num_workers=2, drop_last=True)

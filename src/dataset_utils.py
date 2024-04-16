@@ -45,7 +45,7 @@ class CustomTriviaQADataset(Dataset):
         answer = self._data['answer'][idx]
         relevant_d_id = self._data['relevant_d_ids'][idx]
 
-        q_tokenized = self.retr_tokenizer(query)
+        q_tokenized = self.retr_tokenizer("query: " + query)
         a_tokenized = self.read_tokenizer(answer)
 
         return {
@@ -63,13 +63,12 @@ class CustomTriviaQADataset(Dataset):
         relevant_d_ids = self._data.iloc[idxs,:]['relevant_d_ids'].tolist()
 
         try:
-            q_tokenized = self.retr_tokenizer(queries)
+            q_tokenized = self.retr_tokenizer(list(map(lambda q: "query: " + q, queries)))
             a_tokenized = self.read_tokenizer(answers)
         except ValueError as e:
             print(idxs)
             print(queries)
             print(answers)
-            raise ValueError
         
         a_tokenized['input_ids'][a_tokenized['input_ids'] == 0] = -100
 
@@ -100,8 +99,8 @@ class CustomMSMARCODataset(Dataset):
         query = self._data['query'][idx]
         document = self._data['document'][idx]
 
-        q_tokenized = self.tokenizer(query)
-        d_tokenized = self.tokenizer(document)
+        q_tokenized = self.tokenizer("query: " + query)
+        d_tokenized = self.tokenizer("passage: " + document)
 
         return {
             'q_ids': q_tokenized['input_ids'],
@@ -114,8 +113,8 @@ class CustomMSMARCODataset(Dataset):
         queries = self._data.iloc[idxs,:]['query'].tolist()
         documents = self._data.iloc[idxs,:]['document'].tolist()
 
-        q_tokenized = self.tokenizer(queries)
-        d_tokenized = self.tokenizer(documents)
+        q_tokenized = self.tokenizer(list(map(lambda q: "query: " + q, queries)))
+        d_tokenized = self.tokenizer(list(map(lambda d: "passage: " + d, documents)))
 
         return {
             'q_ids': q_tokenized['input_ids'],

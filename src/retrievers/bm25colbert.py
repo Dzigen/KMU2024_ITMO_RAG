@@ -57,7 +57,7 @@ class BM25ColBertRetriever:
     def texts2documents(self, texts, metadata=[]):
         mdata = []
         for i in tqdm(range(len(texts))):
-            tmp_m = {'colb_tokenized': self.tokenize("passage: " + texts[i])}
+            tmp_m = {"doc_format": "passage: " + texts[i]}
             if metadata is not None:
                 tmp_m.update(metadata[i])
             mdata.append(tmp_m)
@@ -85,9 +85,8 @@ class BM25ColBertRetriever:
 
         # stage2
         #print("Re-ranking documents with ColBERT...")
-        self.model.eval()
         if tokenized_query is None:
-            tokenized_query = self.tokenize(query)
+            tokenized_query = self.tokenize("query: "+query)
 
         colbert_docs, scores, docs_metadata = self.colbert_retrieve(
             tokenized_query, bm25_docs, tokenized_docs, docs_metadata)
@@ -109,8 +108,9 @@ class BM25ColBertRetriever:
     def bm25_retrieve(self, query):
         relevant_documents = self.bm25_model.get_relevant_documents(query)
         text_docs = [doc.page_content for doc in relevant_documents]
-        tokenized_docs = self.tokenize(text_docs)
         metadata = [doc.metadata for doc in relevant_documents]
+
+        tokenized_docs = self.tokenize([meta["doc_format"] for meta in metadata])
         
         docs_dataset = DocDataset(tokenized_docs)
         docs_laoder = DataLoader(docs_dataset, batch_size=self.docs_bs, 

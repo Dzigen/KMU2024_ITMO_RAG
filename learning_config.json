@@ -1,6 +1,6 @@
 {
     "base_dir": "/home/ubuntu/KMU2024",
-    "run_name": "join_colbert_fid_triviaqa",
+    "run_name": "join_bm25colbert_fid_triviaqa",
     
     "run_type": "join",
     "eval_only": false,
@@ -14,24 +14,24 @@
     "reader_layers_toupdate": [11,10,9],
     
     "retriever_type": "bm25colbert", 
-    "tuned_retriever_weights": "retriever_colbert_msmarco/bestmodel.pt",
+    "tuned_retriever_weights": "retriever_bm25colbert_msmarco/bestmodel.pt",
     "retriever_frozen": false,
     "retriever_layers_toupdate": [11,10,9],
     "retrieved_cands": 3,
     "retriever_docs_batch": 64,
     "retriever_bm25_cands": 128,
-    "base": "bm25_triviaqa_base3.pkl",
+    "base": "bm25_triviaqa_base.pkl",
 
-    "lr": 1e-5,
-    "epochs": 3,
+    "lr": 5e-5,
+    "epochs": 1,
     "batch_size": 2,
     "device": "cuda",
     "base_score_compare": "meteor",
     "grad_accum_steps": 4,
 
-    "dataset": "triviaqa",
-    "train_size": 5000,
-    "eval_size": 1000,
+    "dataset": "mtriviaqa",
+    "train_size": 1000,
+    "eval_size": 100,
     
     "to_save": true
 }

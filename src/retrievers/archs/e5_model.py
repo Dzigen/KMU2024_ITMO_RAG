@@ -62,14 +62,13 @@ class E5(nn.Module):
         # print("out:")
         last_hidden = self.encoder(ids, attention_mask=masks).last_hidden_state
         # print("encoder -", last_hidden.shape)
-        norm_hidden = nn.functional.normalize(last_hidden, dim=-1)
 
-        return norm_hidden
+        return last_hidden
 
     def average_pool(self, last_hidden_states, attention_mask):
             last_hidden = last_hidden_states.masked_fill(~attention_mask[..., None].bool(), 0.0)
             # print(last_hidden.shape)
-            return last_hidden.sum(dim=1) / attention_mask.sum(dim=1)[..., None]
+            return nn.functional.normalize(last_hidden.sum(dim=1) / attention_mask.sum(dim=1)[..., None], dim=-1)
 
     def compute_scores(self, q_hidden, q_masks, d_hidden, d_masks, q_pool=True, d_pool=True):
         '''

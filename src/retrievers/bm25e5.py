@@ -56,7 +56,7 @@ class BM25E5Retriever:
     def texts2documents(self, texts, metadata=[]):
         mdata = []
         for i in tqdm(range(len(texts))):
-            tmp_m = {'e5_tokenized': self.tokenize("passage: " + texts[i])}
+            tmp_m = {"doc_format": "passage: " + texts[i]}
             if metadata is not None:
                 tmp_m.update(metadata[i])
             mdata.append(tmp_m)
@@ -84,9 +84,8 @@ class BM25E5Retriever:
 
         # stage2
         #print("Re-ranking documents with E5...")
-        self.model.eval()
         if tokenized_query is None:
-            tokenized_query = self.tokenize(query)
+            tokenized_query = self.tokenize("query: " + query)
         e5_docs, scores, docs_metadata = self.e5_retrieve(
             tokenized_query, bm25_docs, docs_loader, docs_metadata)
 
@@ -100,7 +99,6 @@ class BM25E5Retriever:
         else:
             return e5_docs, scores, docs_metadata
 
-
     #
     def filter_by_score(self, scores):
         return torch.tensor([i for i, val in enumerate(scores) if val > self.threshold])
@@ -109,9 +107,10 @@ class BM25E5Retriever:
     def bm25_retrieve(self, query):
         relevant_documents = self.bm25_model.get_relevant_documents(query)
         text_docs = [doc.page_content for doc in relevant_documents]
-        tokenized_docs = self.tokenize(text_docs)
         metadata = [doc.metadata for doc in relevant_documents]
 
+        tokenized_docs = self.tokenize([meta["doc_format"] for meta in metadata])
+        
         docs_dataset = DocDataset(tokenized_docs)
         docs_laoder = DataLoader(docs_dataset, batch_size=self.docs_bs, 
                                  collate_fn=custom_collate, shuffle=False)
