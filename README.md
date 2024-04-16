@@ -1,3 +1,6 @@
 # KMU2024_ITMO_RAG
 
-presentation: https://docs.google.com/presentation/d/17MzUh1IL_yAUPJICSioB5ze4wKVxjAdP15Xq1fKcmV8/edit?usp=sharing
+Были реализованы следующие RAG-конфигурации:
+* Retriever(BM25 + ColBERT) + Reader(FiD);
+* Retriever(Single E5) + Reader(FiD);
+* Retriever(Dual E5) + Reader(FiD).
