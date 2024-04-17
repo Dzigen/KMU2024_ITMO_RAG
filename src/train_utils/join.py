@@ -164,8 +164,8 @@ def join_run(config: RunConfig, reader: Union[FiDReader], retriever: Union[BM25E
         if best_score <= eval_scores[-1]['reader'][config.base_score_compare]:
             print("Update Best Model")
             if config.to_save:
-                torch.save(retriever.model.state_dict(), retbm_spath)
-                torch.save(reader.model.state_dict(), readbm_spath)
+                retriever.save_model(retbm_spath)
+                reader.save_model(readbm_spath)
             best_score = eval_scores[-1]['reader'][config.base_score_compare]
 
         # Save train/eval info to logs folder
@@ -178,8 +178,8 @@ def join_run(config: RunConfig, reader: Union[FiDReader], retriever: Union[BM25E
 
     print("Save Last Model")
     if config.to_save:
-        torch.save(retriever.model.state_dict(), retlm_spath)
-        torch.save(reader.model.state_dict(), readlm_spath)
+        retriever.save_model(retlm_spath)
+        reader.save_model(readlm_spath)
 
     return ml_train, ml_eval, best_score, eval_scores
 
