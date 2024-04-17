@@ -1,0 +1,1752 @@
+{
+  "1": {
+    "gen": [
+      "helicopter",
+      "F",
+      "boxing",
+      "Chicago"
+    ],
+    "target": [
+      "Helicopter",
+      "Bh",
+      "Boxing",
+      "Chicago"
+    ]
+  },
+  "2": {
+    "gen": [
+      "The Great Train Robbery",
+      "Denmark",
+      "RMS \"Lusitania\"",
+      "Alistair Cooke"
+    ],
+    "target": [
+      "Kit Carson",
+      "Austria",
+      "Lusitania",
+      "Alistair Cooke"
+    ]
+  },
+  "3": {
+    "gen": [
+      "Oliver!",
+      "Henry James",
+      "Nitrous oxide",
+      "Congo River"
+    ],
+    "target": [
+      "Half",
+      "Henry James",
+      "Nitrous oxide",
+      "Zaire, formerly Congo"
+    ]
+  },
+  "4": {
+    "gen": [
+      "Nairobi",
+      "West Africa",
+      "Marcus Garvey",
+      "Robert Schwartzman"
+    ],
+    "target": [
+      "Nairobi",
+      "Burkino Faso",
+      "Marcus Garvey",
+      "Francis Ford Coppola"
+    ]
+  },
+  "5": {
+    "gen": [
+      "2004",
+      "squash",
+      "Hitler",
+      "California"
+    ],
+    "target": [
+      "70s",
+      "Squash",
+      "Mussolini",
+      "Dwight Eisenhower"
+    ]
+  },
+  "6": {
+    "gen": [
+      "1930s",
+      "five",
+      "Greenville, Ohio",
+      "R.E.M."
+    ],
+    "target": [
+      "1930s",
+      "Three",
+      "Chicago, Illinois",
+      "Rem"
+    ]
+  },
+  "7": {
+    "gen": [
+      "Royal Canadian Air Force",
+      "Austria",
+      "Lucy",
+      "four"
+    ],
+    "target": [
+      "Royal Canadian",
+      "Austria",
+      "Lucy",
+      "Five"
+    ]
+  },
+  "8": {
+    "gen": [
+      "Little John Harris",
+      "the \"dull one\"",
+      "Louis Dearborn",
+      "Hollywood"
+    ],
+    "target": [
+      "John Little",
+      "Backward--but for one misplaced letter--it would spell toilets",
+      "Louis La Moore",
+      "Ozcot"
+    ]
+  },
+  "9": {
+    "gen": [
+      "John Keats",
+      "$39.9 million",
+      "Isaac Asimov",
+      "Colditz Castle"
+    ],
+    "target": [
+      "Keats' poem Ode to a Nightingale",
+      "$2.66 million. There are 15 sunflowers in the painting",
+      "Mark Twain. It was a Self-Pasting Scrapbook containing blank pages coated with a gum veneer",
+      "Colditz"
+    ]
+  },
+  "10": {
+    "gen": [
+      "Barry Gibb",
+      "The Port of Long Beach",
+      "When Doves Cry",
+      "John"
+    ],
+    "target": [
+      "Carole King",
+      "Bowls",
+      "When Doves Cry by Prince",
+      "Julian Edwin"
+    ]
+  },
+  "11": {
+    "gen": [
+      "Vicki Lawrence",
+      "Anna Kendrick",
+      "Persephone",
+      "geese"
+    ],
+    "target": [
+      "Vicki Lawrence",
+      "Debra Winger",
+      "Persephone",
+      "The goose. According to legend, the honking of geese alerted the Romans to a night raid by the Gauls"
+    ]
+  },
+  "12": {
+    "gen": [
+      "black",
+      "travelling sales representative",
+      "figure skating",
+      "Poland"
+    ],
+    "target": [
+      "White at the base, black in the middle and red at the tip",
+      "Worked in insurance",
+      "Ice Skating",
+      "Poland"
+    ]
+  },
+  "13": {
+    "gen": [
+      "Indonesia",
+      "1,185",
+      "Margaret Thatcher",
+      "Bertrand Castelli"
+    ],
+    "target": [
+      "Indonesia",
+      "7,417 square miles",
+      "Margaret Thatcher",
+      "Joseph Papp"
+    ]
+  },
+  "14": {
+    "gen": [
+      "the Atocha treasure",
+      "1067",
+      "Alton B. Parker",
+      "Poland"
+    ],
+    "target": [
+      "Sunken Treasure",
+      "145,556 square miles",
+      "Charles W. Fairbanks",
+      "Nicaragua"
+    ]
+  },
+  "15": {
+    "gen": [
+      "Bette Midler",
+      "The Sun",
+      "\"Can't Help Falling in Love\"",
+      "Mouse"
+    ],
+    "target": [
+      "Rhea Pearlman",
+      "Bild",
+      "Suspicious Minds",
+      "Noddy"
+    ]
+  },
+  "16": {
+    "gen": [
+      "1950s",
+      "nurse anesthetists",
+      "Project Mercury",
+      "Anwar Sadat"
+    ],
+    "target": [
+      "1930s",
+      "Accountancy",
+      "Project Mercury",
+      "Anwar El-Sadat"
+    ]
+  },
+  "17": {
+    "gen": [
+      "Europe",
+      "Rothschild",
+      "March",
+      "General Sir Alan Brooke"
+    ],
+    "target": [
+      "Lithuania",
+      "Rothschild",
+      "March",
+      "George Patton"
+    ]
+  },
+  "18": {
+    "gen": [
+      "Jim Whittaker",
+      "Red Brigades",
+      "Mira Sorvino",
+      "her legs"
+    ],
+    "target": [
+      "James Whittaker",
+      "Red Brigade",
+      "Naomi Campbell",
+      "Her legs"
+    ]
+  },
+  "19": {
+    "gen": [
+      "19th century",
+      "Diane Hall",
+      "F",
+      "Republican"
+    ],
+    "target": [
+      "1940s",
+      "Diane Hall",
+      "Bs",
+      "Doctor"
+    ]
+  },
+  "20": {
+    "gen": [
+      "Bob Hawke",
+      "Irving Berlin",
+      "At Close Range",
+      "Astley"
+    ],
+    "target": [
+      "Bob Hawke",
+      "Irving Berlin",
+      "Taps",
+      "Rick Astley"
+    ]
+  },
+  "21": {
+    "gen": [
+      "England",
+      "Something's Got to Give",
+      "important sculptors of the 20th century",
+      "Alistair"
+    ],
+    "target": [
+      "Colorado",
+      "The Misfits",
+      "Sculptor",
+      "Alfred"
+    ]
+  },
+  "22": {
+    "gen": [
+      "second",
+      "Arnold Schwarzenegger",
+      "GoldenEye",
+      "John Wayne"
+    ],
+    "target": [
+      "Ii",
+      "Arnold Schwarzenegger",
+      "Goldeneye",
+      "John Wayne"
+    ]
+  },
+  "23": {
+    "gen": [
+      "Kevin Costner",
+      "Vietnam War",
+      "Ann Reinking",
+      "Hungary"
+    ],
+    "target": [
+      "Kevin Costner",
+      "Vietnam",
+      "Roy Scheider",
+      "Hungary"
+    ]
+  },
+  "24": {
+    "gen": [
+      "The Absent-Minded Waiter",
+      "Dolly Parton",
+      "Phil Harris",
+      "the chess Olympiads"
+    ],
+    "target": [
+      "The Jerk",
+      "Beethoven's 2nd",
+      "Phil Harris",
+      "Chess"
+    ]
+  },
+  "25": {
+    "gen": [
+      "Isaac Asimov",
+      "Phillip Louganis",
+      "bullet-proof vest",
+      "Debbie Reynolds"
+    ],
+    "target": [
+      "Isaac Asimov",
+      "Greg Louganis",
+      "Left hand",
+      "Debbie Reynolds"
+    ]
+  },
+  "26": {
+    "gen": [
+      "Ukraine",
+      "Fallin' in Love",
+      "Algeria",
+      "Evita"
+    ],
+    "target": [
+      "Liberia",
+      "Fallin' In Love",
+      "Algeria",
+      "Eva Peron"
+    ]
+  },
+  "27": {
+    "gen": [
+      "capital punishment",
+      "Paris",
+      "Nautilus",
+      "Blue Beat"
+    ],
+    "target": [
+      "Guillotine",
+      "Paris",
+      "Nautilus",
+      "Chess"
+    ]
+  },
+  "28": {
+    "gen": [
+      "Jordan",
+      "The Penguin",
+      "Take Good Care of My Baby",
+      "Beatrix of the Netherlands"
+    ],
+    "target": [
+      "Jordan",
+      "The Penguin",
+      "Diana (by Paul Anka)",
+      "Beatrix"
+    ]
+  },
+  "29": {
+    "gen": [
+      "the Bank of the West Classic",
+      "Hubert Green",
+      "Washington Redskins",
+      "Dennis Conner"
+    ],
+    "target": [
+      "European Indoor Championships Zurich",
+      "Hubert Green",
+      "Cincinnati Bengals, Denver Broncos, Miami Dolphins",
+      "Dennis Conner"
+    ]
+  },
+  "30": {
+    "gen": [
+      "20th of May Stadium",
+      "Ireland",
+      "wide receiver",
+      "Super Bowl"
+    ],
+    "target": [
+      "Jungle",
+      "Ireland",
+      "Wide receiver",
+      "Super Bowl"
+    ]
+  },
+  "31": {
+    "gen": [
+      "tennis",
+      "independent",
+      "0.8",
+      "John Landis"
+    ],
+    "target": [
+      "Swimming",
+      "Wrestler",
+      "58,900 square miles",
+      "John Landis"
+    ]
+  },
+  "32": {
+    "gen": [
+      "Italy",
+      "William",
+      "Ron Howard",
+      "Peter and Gladys"
+    ],
+    "target": [
+      "Italy",
+      "William",
+      "Phil Silvers",
+      "One of The Boys"
+    ]
+  },
+  "33": {
+    "gen": [
+      "Alex P. Keaton",
+      "A Soviet journalist",
+      "Chaim Weizmann",
+      "Mikhail Gorbachev"
+    ],
+    "target": [
+      "Ned Keaton",
+      "Gorbachev",
+      "Chiam Weizmann",
+      "Eduard Shevardnadze"
+    ]
+  },
+  "34": {
+    "gen": [
+      "President Franklin D. Roosevelt",
+      "ribs",
+      "Truman",
+      "Love Field"
+    ],
+    "target": [
+      "William Taft",
+      "Lung",
+      "Truman",
+      "Air force I"
+    ]
+  },
+  "35": {
+    "gen": [
+      "The Killers",
+      "web address",
+      "a local loop telephone circuit that is shared by multiple telephone service subscribers",
+      "road"
+    ],
+    "target": [
+      "The Killers",
+      "Web page address",
+      "Shared phone line",
+      "Search Engine"
+    ]
+  },
+  "36": {
+    "gen": [
+      "a \"post\"",
+      "e-mail",
+      "line",
+      "St. Louis"
+    ],
+    "target": [
+      "Article",
+      "Bookmarks",
+      "On line",
+      "(Johnny B) Goode Street"
+    ]
+  },
+  "37": {
+    "gen": [
+      "Battle Creek",
+      "KO",
+      "Cape Verde",
+      "clarinet"
+    ],
+    "target": [
+      "Hospital",
+      "Nanu Nanu",
+      "Cape Verde",
+      "Saxophone"
+    ]
+  },
+  "38": {
+    "gen": [
+      "Tony Bennett",
+      "Sony",
+      "$37",
+      "Khaleda Zia"
+    ],
+    "target": [
+      "Guy Mitchell",
+      "Sony",
+      "30",
+      "Benzair Bhutto"
+    ]
+  },
+  "39": {
+    "gen": [
+      "Mary McAleese",
+      "Frank Muir",
+      "Ken Handler",
+      "Nicholas II"
+    ],
+    "target": [
+      "Mary McAleese",
+      "Zsa Zsa Gabor",
+      "The children of their creators",
+      "Tsar Nicholas II"
+    ]
+  },
+  "40": {
+    "gen": [
+      "Margaret Thatcher",
+      "Pickford",
+      "Victoria Beckham",
+      "Texas"
+    ],
+    "target": [
+      "Margaret Thatcher",
+      "Douglas Fairbanks",
+      "Margaret Thatcher",
+      "Texas"
+    ]
+  },
+  "41": {
+    "gen": [
+      "Fanny Brice",
+      "Annie",
+      "Aran Islands",
+      "Italy"
+    ],
+    "target": [
+      "Brice",
+      "Annie",
+      "Aran",
+      "Italy"
+    ]
+  },
+  "42": {
+    "gen": [
+      "Federico Fellini",
+      "John Limbert",
+      "Charles de Gaulle",
+      "Johnny Depp"
+    ],
+    "target": [
+      "Cecil B de Mille",
+      "Bruce Laingen",
+      "Charles de Gaulle",
+      "Johnny Depp"
+    ]
+  },
+  "43": {
+    "gen": [
+      "Danielle Bowden",
+      "Shannon Lucid",
+      "Christiaan Barnard",
+      "Alfred Stieglitz"
+    ],
+    "target": [
+      "Barbra Streisand",
+      "Shannon Lucid",
+      "William DeVries",
+      "Alfred Stieglitz"
+    ]
+  },
+  "44": {
+    "gen": [
+      "500",
+      "Sonny Crockett",
+      "Anton Schwarzkopf",
+      "A Little Night Music"
+    ],
+    "target": [
+      "500 miles",
+      "Crockett",
+      "Boeing",
+      "West Side Story"
+    ]
+  },
+  "45": {
+    "gen": [
+      "Cherry",
+      "Johnny Horton",
+      "Play Misty for Me",
+      "Lincoln Center"
+    ],
+    "target": [
+      "Cherry",
+      "Johnny Horton",
+      "Play Misty For Me",
+      "Lincoln Center"
+    ]
+  },
+  "46": {
+    "gen": [
+      "Appalachian Mountains",
+      "C. S. Forester",
+      "Vienna",
+      "\"Buran\"-class shuttle"
+    ],
+    "target": [
+      "Blue Ridge Mountains",
+      "Forester",
+      "Vatican City",
+      "Space Shuttle"
+    ]
+  },
+  "47": {
+    "gen": [
+      "American Wild West",
+      "Dallas",
+      "Martin Luther King Jr.",
+      "Charles S. Johnson"
+    ],
+    "target": [
+      "Spanish American War",
+      "Dallas",
+      "Martin Luther King",
+      "Booker T Washington"
+    ]
+  },
+  "48": {
+    "gen": [
+      "Ralph Bunche",
+      "Mary Hayley Bell",
+      "Spain",
+      "Saied and Zaid Marham"
+    ],
+    "target": [
+      "Ralph Bunche",
+      "Mary Hayley Bell",
+      "Spain",
+      "Scott"
+    ]
+  },
+  "49": {
+    "gen": [
+      "Fanny Brice",
+      "Greta Garbo",
+      "Africa",
+      "Silicon Glen"
+    ],
+    "target": [
+      "Winston Churchill",
+      "Greta Garbo",
+      "Bangladesh",
+      "Silicon Glen"
+    ]
+  },
+  "50": {
+    "gen": [
+      "1997",
+      "Sharpeville",
+      "Hindi",
+      "Abu Dhabi"
+    ],
+    "target": [
+      "1997",
+      "Sharpeville",
+      "Sanskrit",
+      "Abu Dhabi"
+    ]
+  },
+  "51": {
+    "gen": [
+      "Iran",
+      "Youhenna Diab",
+      "Roanoke Colony",
+      "Dimitri Tsafendas"
+    ],
+    "target": [
+      "Iran",
+      "Scheherazade",
+      "Jamestown",
+      "Hendrik Verwoerd"
+    ]
+  },
+  "52": {
+    "gen": [
+      "1948",
+      "the War of the Spanish Succession",
+      "1950",
+      "Sapientia"
+    ],
+    "target": [
+      "1948",
+      "War of Spanish Succession",
+      "1950",
+      "Speaker"
+    ]
+  },
+  "53": {
+    "gen": [
+      "House of Commons",
+      "The North Briton",
+      "Amnesty International",
+      "Home Secretary"
+    ],
+    "target": [
+      "House of Commons",
+      "The North Briton",
+      "Amnesty International",
+      "Home Secretary"
+    ]
+  },
+  "54": {
+    "gen": [
+      "Aneurin Bevan",
+      "Charles de Gaulle",
+      "Thomas More",
+      "wool"
+    ],
+    "target": [
+      "Aneurin Bevan",
+      "Charles de Gaulle",
+      "Thomas More",
+      "Lanolin"
+    ]
+  },
+  "55": {
+    "gen": [
+      "six",
+      "right angles",
+      "The SI unit of energy",
+      "elements that have been subjected to extremely cold temperatures"
+    ],
+    "target": [
+      "Six",
+      "Angles",
+      "Calorie",
+      "Very low temperature"
+    ]
+  },
+  "56": {
+    "gen": [
+      "near the insect\u2019s mouth",
+      "Fortingall Yew",
+      "stomatal aperture",
+      "oxalic acid"
+    ],
+    "target": [
+      "Skull",
+      "Yew",
+      "Stomata",
+      "Oxalic acid"
+    ]
+  },
+  "57": {
+    "gen": [
+      "yew",
+      "The reptilian brain",
+      "98\u00b0",
+      "retina"
+    ],
+    "target": [
+      "Yew",
+      "Hypothalamus",
+      "98.4 degrees F",
+      "Retina"
+    ]
+  },
+  "58": {
+    "gen": [
+      "the ovary",
+      "water",
+      "synovial fluid",
+      "The liver"
+    ],
+    "target": [
+      "Ovaries",
+      "Water",
+      "Synovial fluid",
+      "Liver"
+    ]
+  },
+  "59": {
+    "gen": [
+      "adrenal cortex",
+      "asthenosphere",
+      "Mediterranean Sea",
+      "an \"exaltation\""
+    ],
+    "target": [
+      "Adrenal",
+      "Crust",
+      "Mediterranean Sea",
+      "Exhalation"
+    ]
+  },
+  "60": {
+    "gen": [
+      "water vapor",
+      "Saiga",
+      "an iron\u2013nickel alloy and some other elements",
+      "volcanic"
+    ],
+    "target": [
+      "Argon",
+      "Rhinoceros",
+      "Molten iron and nickel",
+      "Igneous"
+    ]
+  },
+  "61": {
+    "gen": [
+      "cooling and solidification of magma or lava",
+      "limestone",
+      "algae blooms",
+      "chlorofluorocarbons"
+    ],
+    "target": [
+      "From cooling volcanic lava",
+      "Limestone",
+      "A bloom",
+      "Chlorine"
+    ]
+  },
+  "62": {
+    "gen": [
+      "orogenic movements",
+      "Mars",
+      "comet",
+      "Uranus"
+    ],
+    "target": [
+      "Syncline",
+      "Mars",
+      "A Comet",
+      "Uranus"
+    ]
+  },
+  "63": {
+    "gen": [
+      "plasma",
+      "Polaris Polaris",
+      "three",
+      "Voyager 1 and Voyager 2"
+    ],
+    "target": [
+      "A nebula",
+      "Polaris",
+      "Three",
+      "voyager 1 and voyager 2"
+    ]
+  },
+  "64": {
+    "gen": [
+      "Sagittarius",
+      "Batman",
+      "nudity",
+      "Edward VII"
+    ],
+    "target": [
+      "Libra - named after the scales",
+      "Batman",
+      "Sleep",
+      "Queen Victoria"
+    ]
+  },
+  "65": {
+    "gen": [
+      "Days of Thunder",
+      "Daily Planet",
+      "Gary Lineker",
+      "Love"
+    ],
+    "target": [
+      "Days Of Thunder",
+      "The Daily Planet",
+      "Gary Lineker",
+      "Love Is All Around"
+    ]
+  },
+  "66": {
+    "gen": [
+      "Bohemian Rhapsody",
+      "Captain Nemo",
+      "\"s\" rather than \"z\"",
+      "1923"
+    ],
+    "target": [
+      "Bohemian Rhapsody",
+      "Captain Nemo",
+      "Old, Long and Since",
+      "1922"
+    ]
+  },
+  "67": {
+    "gen": [
+      "220",
+      "Rebecca",
+      "William Howard Taft",
+      "The Sentinel"
+    ],
+    "target": [
+      "220",
+      "Rebecca",
+      "Eisenhower",
+      "1984"
+    ]
+  },
+  "68": {
+    "gen": [
+      "York",
+      "Richard Gere",
+      "Williams",
+      "Fish"
+    ],
+    "target": [
+      "York",
+      "Molly Ringwald",
+      "Williams",
+      "False"
+    ]
+  },
+  "69": {
+    "gen": [
+      "balloon",
+      "Alaska",
+      "fragile",
+      "one hundred and thirty"
+    ],
+    "target": [
+      "Balloon",
+      "Alaska",
+      "Silence",
+      "Numbers to make up a house sign - each number cost \u01411.20."
+    ]
+  },
+  "70": {
+    "gen": [
+      "\"Cum on Feel The Noize\"",
+      "Wednesday",
+      "the place or shop where they perform their craft",
+      "Scarlet Pimpernel"
+    ],
+    "target": [
+      "Cum On Feel The Noize",
+      "Tuesday",
+      "Blood",
+      "The Scarlet Pimpernel"
+    ]
+  },
+  "71": {
+    "gen": [
+      "1847",
+      "Ansell",
+      "92%",
+      "Victor Meldrew"
+    ],
+    "target": [
+      "1847",
+      "Virgin",
+      "92%",
+      "Victor Meldrew"
+    ]
+  },
+  "72": {
+    "gen": [
+      "Nigeria",
+      "Brazil",
+      "swimming, cycling, and running",
+      "the Marx Brothers"
+    ],
+    "target": [
+      "Nigeria",
+      "Brazil",
+      "Running, Cycling and Swimming",
+      "Marx Brothers"
+    ]
+  },
+  "73": {
+    "gen": [
+      "violet",
+      "Arsenal",
+      "A, B, AB, and O",
+      "Sandra Bullock"
+    ],
+    "target": [
+      "Green",
+      "Coventry City",
+      "A, B, AB and O",
+      "Judi Dench"
+    ]
+  },
+  "74": {
+    "gen": [
+      "both",
+      "1956",
+      "fairy",
+      "1970"
+    ],
+    "target": [
+      "The entire cast of both films was nominated",
+      "1948",
+      "Cobbler",
+      "1976"
+    ]
+  },
+  "75": {
+    "gen": [
+      "the T-1000",
+      "Tom Clancy",
+      "Neil Armstrong",
+      "5"
+    ],
+    "target": [
+      "Hannibal Lecter",
+      "Tom Clancy",
+      "Neil Armstrong",
+      "5"
+    ]
+  },
+  "76": {
+    "gen": [
+      "yellow and red cards",
+      "Cameron Diaz",
+      "Richard Chamberlain",
+      "first in the UK to win one million pounds"
+    ],
+    "target": [
+      "Red and Yellow Cards",
+      "Cameron Diaz",
+      "Richard Chamberlain",
+      "She won a million on 'Who Wants To Be A Millionaire?'"
+    ]
+  },
+  "77": {
+    "gen": [
+      "1987",
+      "400 m hurdles",
+      "James B McAlpine",
+      "Belgium, the Netherlands, and Luxembourg"
+    ],
+    "target": [
+      "1987",
+      "400 metres",
+      "Sol Campbell",
+      "Belgium, Holland and Luxembourg"
+    ]
+  },
+  "78": {
+    "gen": [
+      "Beth",
+      "Miranda Otto",
+      "Raymond Chandler",
+      "Georgia"
+    ],
+    "target": [
+      "Beth Jordache",
+      "Liv Tyler",
+      "Chandler",
+      "Georgia"
+    ]
+  },
+  "79": {
+    "gen": [
+      "water horse",
+      "PVC",
+      "World Wide Web",
+      "30"
+    ],
+    "target": [
+      "Hippopotamous",
+      "Pvc",
+      "The World Wide Web",
+      "292,594"
+    ]
+  },
+  "80": {
+    "gen": [
+      "Figaro",
+      "1891",
+      "The Soldier's Song",
+      "Liz McColgan"
+    ],
+    "target": [
+      "Figaro",
+      "1891",
+      "A Soldier's Song",
+      "Sonia O'Sullivan"
+    ]
+  },
+  "81": {
+    "gen": [
+      "6 May",
+      "Nelson Mandela House",
+      "green, white and red",
+      "Dark green and purple"
+    ],
+    "target": [
+      "April 23rd",
+      "The Nag's Head",
+      "Green, White and Red",
+      "Green and Purple"
+    ]
+  },
+  "82": {
+    "gen": [
+      "St David's Day",
+      "Leicester City",
+      "Advance to St. Charles Place (Pall Mall)",
+      "the Teletubbies"
+    ],
+    "target": [
+      "Easter Sunday",
+      "Manchester United, Arsenal, Chelsea and Blackburn Rovers",
+      "Kings Cross, Marylebone, Fenchurch Street and Liverpool Street",
+      "Tinky Winky"
+    ]
+  },
+  "83": {
+    "gen": [
+      "Kenya",
+      "Every Breath You Take",
+      "Jane McDonald",
+      "Ryder Cup"
+    ],
+    "target": [
+      "Kenya",
+      "Magic",
+      "Jane MacDonald",
+      "The Ryder Cup"
+    ]
+  },
+  "84": {
+    "gen": [
+      "Saint Stephen",
+      "December 16th",
+      "Lionel Blair and Una Stubbs",
+      "tomatoes"
+    ],
+    "target": [
+      "St Andrew's",
+      "December 6th",
+      "Lionel Blair and Una Stubbs",
+      "Tomato"
+    ]
+  },
+  "85": {
+    "gen": [
+      "\"And the winner is...\"",
+      "False",
+      "a small green steam locomotive",
+      "M6"
+    ],
+    "target": [
+      "and the Oscar goes to...",
+      "True",
+      "Ivor The Engine",
+      "M6"
+    ]
+  },
+  "86": {
+    "gen": [
+      "Charles Babbage",
+      "7.5 degrees",
+      "astronomical",
+      "\"Bond... James Bond\""
+    ],
+    "target": [
+      "Charles Babbage",
+      "273K",
+      "Astronomy",
+      "Frankly, my dear, I don't give a damn"
+    ]
+  },
+  "87": {
+    "gen": [
+      "Margaret Thatcher",
+      "F",
+      "The First Cut Is the Deepest",
+      "new"
+    ],
+    "target": [
+      "Winston Churchill, Princess Diana, The Queen and John Lennon",
+      "B, C, M and P",
+      "Daydream Believer",
+      "New"
+    ]
+  },
+  "88": {
+    "gen": [
+      "Robson Green",
+      "Oz",
+      "chandler",
+      "Minotaur"
+    ],
+    "target": [
+      "Robson Green",
+      "Oz",
+      "Chandler",
+      "Minotaur"
+    ]
+  },
+  "89": {
+    "gen": [
+      "Gorgons",
+      "Ben Elton",
+      "Barbra Streisand",
+      "Big Brother Panto"
+    ],
+    "target": [
+      "Gorgons",
+      "Ben Elton",
+      "Barbra Streisand",
+      "The Games"
+    ]
+  },
+  "90": {
+    "gen": [
+      "Paul Young",
+      "Midnight Cowboy",
+      "Minsk",
+      "Heaven 17"
+    ],
+    "target": [
+      "David Bowie",
+      "Midnight Cowboy",
+      "Minsk",
+      "Heaven 17"
+    ]
+  },
+  "91": {
+    "gen": [
+      "Leon Spinks",
+      "Exiles S.C.",
+      "African bush elephant",
+      "quartz"
+    ],
+    "target": [
+      "Henry Cooper",
+      "Chester",
+      "Elephant",
+      "Sand"
+    ]
+  },
+  "92": {
+    "gen": [
+      "gyropalette",
+      "Parthenon",
+      "hanging",
+      "Vinegar Joe"
+    ],
+    "target": [
+      "Marvin Gaye",
+      "The Parthenon",
+      "Strangulation",
+      "Vinegar Joe"
+    ]
+  },
+  "93": {
+    "gen": [
+      "Australian",
+      "apple or pear",
+      "one",
+      "United Artists"
+    ],
+    "target": [
+      "Australian",
+      "Apples",
+      "One",
+      "United Artists"
+    ]
+  },
+  "94": {
+    "gen": [
+      "Enoch Powell",
+      "Becket",
+      "John McCain",
+      "Tim Clark"
+    ],
+    "target": [
+      "Groucho Marx",
+      "Thomas Becket",
+      "Eric Jong",
+      "Michael Aspel"
+    ]
+  },
+  "95": {
+    "gen": [
+      "Nick Hewer",
+      "Henry Cooper",
+      "Stanley Matthews",
+      "Japheth"
+    ],
+    "target": [
+      "Jeff Stelling",
+      "Bill Beaumont, 14 years, 1982-1996",
+      "Stanley Matthews",
+      "Japheth"
+    ]
+  },
+  "96": {
+    "gen": [
+      "Cerberus",
+      "medial cleft",
+      "heavy metal thunder",
+      "the guillotine"
+    ],
+    "target": [
+      "Cerberus",
+      "The philtrum",
+      "Heavy Metal",
+      "That you were on your way to visit Madame Guillotine - it was the two wheeled cart used to ferry people to their deaths"
+    ]
+  },
+  "97": {
+    "gen": [
+      "a campaign to raise Buckley's version",
+      "Smith machine",
+      "Agent J",
+      "the hooker"
+    ],
+    "target": [
+      "By becoming the most popular girl's name in the UK",
+      "A Skateboard",
+      "Agent J",
+      "Hooker"
+    ]
+  },
+  "98": {
+    "gen": [
+      "Superman",
+      "windsurfing",
+      "Water polo",
+      "Bayern Munich"
+    ],
+    "target": [
+      "Rocky Balboa",
+      "Yachting",
+      "Bowls",
+      "FC Bayern Munich"
+    ]
+  },
+  "99": {
+    "gen": [
+      "The Tempest",
+      "The Time Machine",
+      "Marlon Brando",
+      "Bob Dylan"
+    ],
+    "target": [
+      "The Swiss Family Robinson",
+      "The Time Machine",
+      "Marlon Brando",
+      "Bob Dylan"
+    ]
+  },
+  "100": {
+    "gen": [
+      "Victoria Wood",
+      "Victor",
+      "Uncle Ben",
+      "Sir Les Patterson"
+    ],
+    "target": [
+      "Hale and Pace",
+      "Victor",
+      "The Thing",
+      "Sir Les Patterson"
+    ]
+  },
+  "101": {
+    "gen": [
+      "New York City",
+      "RSFSR",
+      "Whomping Willow",
+      "110m hurdles"
+    ],
+    "target": [
+      "San Francisco",
+      "Cccp",
+      "Thw Whomping Willow",
+      "110m hurdles"
+    ]
+  },
+  "102": {
+    "gen": [
+      "on an ad-hoc basis",
+      "Angel",
+      "Buffy the Vampire Slayer",
+      "Saks"
+    ],
+    "target": [
+      "The last Monday in August",
+      "Captain Scarlet",
+      "Buffy The Vampire Slayer",
+      "Saks"
+    ]
+  },
+  "103": {
+    "gen": [
+      "the stapes in the middle ear",
+      "Phil Silvers",
+      "a British surgeon and osteopath",
+      "sheep"
+    ],
+    "target": [
+      "In the neck",
+      "Officer Dibble",
+      "She is the wife of Sir Stephen Redgrave",
+      "Sheep"
+    ]
+  },
+  "104": {
+    "gen": [
+      "soprano, alto, tenor, and bass",
+      "Orange River",
+      "Holyrood Palace",
+      "fossorial"
+    ],
+    "target": [
+      "Soprano, Alto, Tenor, Bass",
+      "The Orange River",
+      "Balmoral Castle",
+      "Mole"
+    ]
+  },
+  "105": {
+    "gen": [
+      "five",
+      "Margate",
+      "Mole",
+      "22"
+    ],
+    "target": [
+      "Five",
+      "Margate",
+      "Mole",
+      "22"
+    ]
+  },
+  "106": {
+    "gen": [
+      "We Are the World",
+      "Earth Song",
+      "He-Man",
+      "Honolulu"
+    ],
+    "target": [
+      "We are the World",
+      "Earth Song",
+      "He-Man",
+      "Honolulu"
+    ]
+  },
+  "107": {
+    "gen": [
+      "May",
+      "Mock on, Mock on",
+      "Fantasies",
+      "John Churchill"
+    ],
+    "target": [
+      "June",
+      "The Tiger",
+      "Shirley Vallentine",
+      "Winston Churchill"
+    ]
+  },
+  "108": {
+    "gen": [
+      "Ruth Ellis",
+      "Cherry Tree Lane",
+      "Jets and the Sharks",
+      "Shoemaker"
+    ],
+    "target": [
+      "Ruth Ellis",
+      "Mary Poppins",
+      "The Sharks and the Jets",
+      "Shoemaker"
+    ]
+  },
+  "109": {
+    "gen": [
+      "Sulfur",
+      "Tom Jones",
+      "heart transplant",
+      "Glenn Miller"
+    ],
+    "target": [
+      "Sulpher",
+      "Tom Jones",
+      "A human heart transplant",
+      "Mike Oldfield."
+    ]
+  },
+  "110": {
+    "gen": [
+      "kitten",
+      "Joey Bishop",
+      "iron",
+      "black"
+    ],
+    "target": [
+      "A kitten.",
+      "Joey Bishop",
+      "Iron",
+      "Blue with white bandages"
+    ]
+  },
+  "111": {
+    "gen": [
+      "Tottenham Hotspur",
+      "The Everly Brothers",
+      "Orville",
+      "Charles Wesley"
+    ],
+    "target": [
+      "Tottenham Hotspur",
+      "The Everley Brothers",
+      "The Wright Brothers",
+      "John and Charles Wesley"
+    ]
+  },
+  "112": {
+    "gen": [
+      "Black Sea",
+      "the Lancang",
+      "Skyfall",
+      "Eric Moussambani"
+    ],
+    "target": [
+      "Black Sea",
+      "The Mekong",
+      "Die Another Day.",
+      "Eric Moussambani"
+    ]
+  },
+  "113": {
+    "gen": [
+      "rugby union football",
+      "lion",
+      "Sadie Frost",
+      "Alaska"
+    ],
+    "target": [
+      "Rugby Union",
+      "Lion",
+      "Sadie Frost",
+      "Maine"
+    ]
+  },
+  "114": {
+    "gen": [
+      "Guy Gibson",
+      "Homer Simpson",
+      "My Chemical Romance",
+      "Cilla Black"
+    ],
+    "target": [
+      "Guy Gibson",
+      "Homer Simpson",
+      "My Chemical Romance",
+      "Cilla Black"
+    ]
+  },
+  "115": {
+    "gen": [
+      "Black Panther",
+      "Maria Gruber",
+      "golf",
+      "Brief Encounter"
+    ],
+    "target": [
+      "Black Panther",
+      "Beverley Allitt",
+      "Water polo",
+      "Brief Encounter"
+    ]
+  },
+  "116": {
+    "gen": [
+      "entirely",
+      "Joseph Aloisius Ratzinger",
+      "four",
+      "Adam West and Burt Ward"
+    ],
+    "target": [
+      "It is from a sheep.",
+      "Joseph Ratzinger.",
+      "Four",
+      "Adam West and Burt Ward"
+    ]
+  },
+  "117": {
+    "gen": [
+      "Martin Short",
+      "dogs and cats",
+      "Jamaica",
+      "Wyatt Earp"
+    ],
+    "target": [
+      "Martin Short.",
+      "Goldfish",
+      "Jamaica",
+      "Wyatt Earp"
+    ]
+  },
+  "118": {
+    "gen": [
+      "Will Tenneray",
+      "Riga Riga",
+      "Gordon Matthew Thomas Sumner",
+      "Bratislava"
+    ],
+    "target": [
+      "Johnny Cash",
+      "Riga",
+      "Sting",
+      "Budapest"
+    ]
+  },
+  "119": {
+    "gen": [
+      "Robin Williams",
+      "1991 science fiction thriller film",
+      "Dennis Rodman",
+      "Nonsuch House"
+    ],
+    "target": [
+      "Robin Williams",
+      "Terminator",
+      "Dennis Rodman",
+      "Nonsuch House"
+    ]
+  },
+  "120": {
+    "gen": [
+      "timber bridges",
+      "the Midianites",
+      "Gallipoli Campaign",
+      "scarpfoot"
+    ],
+    "target": [
+      "Westminster Bridge",
+      "The Assyrians",
+      "Gallipoli",
+      "A chine"
+    ]
+  },
+  "121": {
+    "gen": [
+      "Uma Thurman",
+      "Peter Graves",
+      "mirror-image",
+      "That Was the Week That Was"
+    ],
+    "target": [
+      "Uma Thurman",
+      "Peter Graves",
+      "Orthodox",
+      "Doctor Who"
+    ]
+  },
+  "122": {
+    "gen": [
+      "The Birds",
+      "cherries",
+      "yomari",
+      "Erwin Rommel"
+    ],
+    "target": [
+      "Tom Jones",
+      "Cherry",
+      "Rum",
+      "General Erwin Rommel"
+    ]
+  },
+  "123": {
+    "gen": [
+      "goats",
+      "veal",
+      "plesiosaurs",
+      "Italy"
+    ],
+    "target": [
+      "Cashmere Goat",
+      "A chalkboard",
+      "Plesiosaurus",
+      "Italy"
+    ]
+  },
+  "124": {
+    "gen": [
+      "wooden wine crates",
+      "St Mary the Virgin Church",
+      "black",
+      "Charlie Chaplin"
+    ],
+    "target": [
+      "Case",
+      "St Barnabus",
+      "Chestnut",
+      "Charlie Chaplin"
+    ]
+  },
+  "125": {
+    "gen": [
+      "Cindy Crawford",
+      "Neil Armstrong and Buzz Aldrin",
+      "Louise Bryant",
+      "Sprint"
+    ],
+    "target": [
+      "Cindy Crawford",
+      "The Wright Brothers",
+      "Reds",
+      "Keirin"
+    ]
+  }
+}

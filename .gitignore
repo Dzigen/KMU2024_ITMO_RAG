@@ -1,7 +1,7 @@
 base_models/
 repos/
 data/
-logs/
+*.pt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

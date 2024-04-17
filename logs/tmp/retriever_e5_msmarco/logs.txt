@@ -1,0 +1,3 @@
+{'epoch': 1, 'train_loss': 2.71972, 'eval_losss': 2.69955, 'scores': {'accuracy': 0.93069}, 'train_time': 309.024, 'eval_time': 45.81784}
+{'epoch': 2, 'train_loss': 2.63886, 'eval_losss': 2.68574, 'scores': {'accuracy': 0.91386}, 'train_time': 307.2417, 'eval_time': 45.21316}
+{'epoch': 3, 'train_loss': 2.61784, 'eval_losss': 2.68345, 'scores': {'accuracy': 0.89523}, 'train_time': 307.97484, 'eval_time': 44.78924}

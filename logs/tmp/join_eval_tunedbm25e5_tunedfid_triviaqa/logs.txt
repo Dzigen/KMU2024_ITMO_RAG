@@ -1,0 +1,1 @@
+{'epoch': 0, 'train_loss': -1, 'eval_losss': 1.21103, 'scores': {'reader': {'bleu': 0.0, 'rouge': 0.75, 'meteor': 0.375, 'em': 0.25}, 'retriever': {'MRR': 0.02146, 'mAP': 0.02146}}, 'train_time': -1, 'eval_time': -1}

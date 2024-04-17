@@ -1,0 +1,1 @@
+{'epoch': 0, 'train_loss': -1, 'eval_losss': 1.46013, 'scores': {'accuracy': 0.9994}, 'train_time': -1, 'eval_time': -1}

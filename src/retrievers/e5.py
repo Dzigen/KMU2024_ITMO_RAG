@@ -4,7 +4,7 @@ from langchain_core.documents import Document
 from tqdm import tqdm
 import numpy as np
 import torch
-
+import torch.nn as nn
 
 from .archs.e5_model import E5_BASE_PATH, E5Tokenizer, E5
 
@@ -31,6 +31,11 @@ class E5Retriever:
         self.tokenize = lambda x: self.stage2_tokenizer(
             x, return_tensors='pt', truncation=True, padding=True,
             add_special_tokens=True)
+        
+        if mode == 'train':
+            self.loss_objective = nn.CrossEntropyLoss()
+            self.loss = lambda x: self.loss_objective(
+                x, torch.arange(0, x.shape[0], device=self.device))
 
     #   
     def texts2documents(self, texts, metadata):
@@ -72,7 +77,7 @@ class E5Retriever:
     def search(self, query, tokenized_query=None):
 
         # stage 1
-        print("Retrieving documents with E5...")
+        #print("Retrieving documents with E5...")
         if tokenized_query is None:
             tokenized_query = self.tokenize("query: " + query)
             tokenized_query = {k: v.to(self.device) for k, v in tokenized_query.items()}

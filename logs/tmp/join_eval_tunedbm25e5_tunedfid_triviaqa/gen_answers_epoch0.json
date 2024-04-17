@@ -1,0 +1,22 @@
+{
+  "1": {
+    "gen": [
+      "helicopter",
+      "0 to 9"
+    ],
+    "target": [
+      "Helicopter",
+      "Bh"
+    ]
+  },
+  "2": {
+    "gen": [
+      "boxing",
+      "Chicago"
+    ],
+    "target": [
+      "Boxing",
+      "Chicago"
+    ]
+  }
+}

@@ -107,7 +107,8 @@ if learn_config.retriever_type != '':
     elif learn_config.retriever_type == 'e5':
         retriever = E5Retriever(
             k=learn_config.retrieved_cands,
-            device=learn_config.device)
+            device=learn_config.device,
+            mode='eval' if learn_config.retriever_frozen else 'train')
         
     else:
         print("Invalid 'retriever_type'-value in config!")

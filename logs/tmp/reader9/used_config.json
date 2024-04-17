@@ -1,0 +1,22 @@
+{
+  "base_dir": "/home/ubuntu/KMU2024",
+  "run_name": "reader9",
+  "run_type": "reader",
+  "reader_type": "fid",
+  "base_reader_weights": "google/flan-t5-base",
+  "reader_input_format": "context: {c}\nquestion: {q}",
+  "tuned_reader_weights": "",
+  "retriever_type": "",
+  "tuned_retriever_weights": "",
+  "retriever_frozen": true,
+  "lr": 1e-05,
+  "epochs": 5,
+  "batch_size": 8,
+  "device": "cuda",
+  "retrieved_cands": -1,
+  "retriever_docs_batch": -1,
+  "train_dataset": "squad",
+  "base": "",
+  "base_score_compare": "rouge",
+  "to_save": true
+}

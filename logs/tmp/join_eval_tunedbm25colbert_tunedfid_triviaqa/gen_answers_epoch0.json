@@ -1,0 +1,22 @@
+{
+  "1": {
+    "gen": [
+      "a single-engine helicopter",
+      "F"
+    ],
+    "target": [
+      "Helicopter",
+      "Bh"
+    ]
+  },
+  "2": {
+    "gen": [
+      "boxing",
+      "Chicago"
+    ],
+    "target": [
+      "Boxing",
+      "Chicago"
+    ]
+  }
+}

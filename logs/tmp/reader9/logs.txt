@@ -1,0 +1,2 @@
+{'epoch': 1, 'train_loss': 0.31041, 'eval_losss': 0.3406, 'scores': {'bleu': 0.43965, 'rouge': 0.81869, 'meteor': 0.63563, 'em': 0.61165}, 'train_time': 1596.37412, 'eval_time': 379.33177}
+{'epoch': 2, 'train_loss': 0.27324, 'eval_losss': 0.33766, 'scores': {'bleu': 0.44131, 'rouge': 0.81855, 'meteor': 0.63643, 'em': 0.60848}, 'train_time': 2695.05482, 'eval_time': 463.44545}
