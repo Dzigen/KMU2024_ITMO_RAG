@@ -157,7 +157,7 @@ class CustomSQuADDataset(Dataset):
         title = self._data['title'][idx]
         context = self._data['context'][idx]
         
-        input = self.input_format.format(q=query,c=f"{title}.\n{context}")
+        input = self.input_format.format(q=query,c=context,t=title)
         tokenized_input = self.tokenizer([input])
         
         label = self._data['answers'][idx][0]
@@ -172,7 +172,7 @@ class CustomSQuADDataset(Dataset):
 
     def __getitems__(self, idxs):
         contexts = [self.input_format.format(
-            q=self._data['question'][idx],c=self._data['context'][idx]) 
+            q=self._data['question'][idx],c=self._data['context'][idx], t=self._data['title'][idx]) 
             for idx in idxs]
         
         labels = [self._data['answers'][idx][0] for idx in idxs]

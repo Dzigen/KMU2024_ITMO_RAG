@@ -72,7 +72,11 @@ class E5Retriever:
         self.faiss = FAISS.load_local(file_path, self.model,
                                       allow_dangerous_deserialization=True,
                                       distance_strategy='COSINE')
-    
+
+    #
+    def save_model(self, model_path):
+        torch.save(self.model.state_dict(), model_path)
+
     #
     def search(self, query, tokenized_query=None):
 

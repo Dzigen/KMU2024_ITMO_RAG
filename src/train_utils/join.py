@@ -40,8 +40,8 @@ class JoinLoss:
         #print("k_loss:", reader_k_loss.shape)
         #print("retriever scores: ", retriever_k_scores.shape)
 
-        retriever_part = torch.mean(torch.log(torch.sum(
-            F.softmax(retriever_k_scores / self.temp, dim=1)*reader_k_loss, dim=1)))
+        retriever_part = torch.mean(torch.sum(
+            F.softmax(retriever_k_scores / self.temp, dim=1)*reader_k_loss, dim=1))
 
         return reader_topk_loss + retriever_part
     
@@ -237,7 +237,7 @@ def join_evaluate(config: RunConfig, reader: Union[FiDReader], retriever: Union[
 
             cands_scores = torch.cat((cands_scores, k_scores), dim=0)
             prep_txts += list(map(
-                lambda t: config.reader_input_format.format(q=batch['q_text'][i],c=t), texts))
+                lambda t: config.reader_input_format.format(q=batch['q_text'][i], c=t, t="-"), texts))
         
         # READER_PART
 
@@ -353,7 +353,7 @@ def join_train(config: RunConfig, reader: Union[FiDReader],
 
             cands_scores = torch.cat((cands_scores, k_scores), dim=0)
             prep_txts += list(map(
-                lambda t: config.reader_input_format.format(q=batch['q_text'][i],c=t), texts))
+                lambda t: config.reader_input_format.format(q=batch['q_text'][i],c=t, t="-"), texts))
         
         # READER_PART
 

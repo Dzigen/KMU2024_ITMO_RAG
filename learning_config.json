@@ -1,6 +1,6 @@
 {
     "base_dir": "/home/ubuntu/KMU2024",
-    "run_name": "join_bm25e5_fid_triviaqa",
+    "run_name": "join_e5_fid_triviaqa3",
     
     "run_type": "join",
     "eval_only": false,
@@ -8,30 +8,30 @@
 
     "reader_type": "fid",
     "base_reader_weights": "google/flan-t5-base",
-    "reader_input_format": "context: {c}\n\nquestion: {q}",
-    "tuned_reader_weights": "reader_fid_squad/bestmodel.pt", 
+    "reader_input_format": "You are a QA-system. Answer a given question only based on a given context (with title) below.\n\n\nTitle: {t}\nContext: {c}\n\nQuestion: {q}",
+    "tuned_reader_weights": "", 
     "reader_gen_ml": 64,
-    "reader_layers_toupdate": [11,10,9],
+    "reader_layers_toupdate": [11,10,9,8,7,6],
     
-    "retriever_type": "bm25e5", 
+    "retriever_type": "e5", 
     "tuned_retriever_weights": "",
     "retriever_frozen": false,
-    "retriever_layers_toupdate": [11,10,9],
+    "retriever_layers_toupdate": "all",
     "retrieved_cands": 4,
     "retriever_docs_batch": 64,
     "retriever_bm25_cands": 128,
     "base": "e5_triviaqa_base",
 
     "lr": 5e-5,
-    "epochs": 1,
-    "batch_size": 2,
+    "epochs": 10,
+    "batch_size": 32,
     "device": "cuda",
     "base_score_compare": "meteor",
-    "grad_accum_steps": 4,
+    "grad_accum_steps": 1,
 
     "dataset": "triviaqa",
-    "train_size": 1000,
-    "eval_size": 100,
+    "train_size": 10000,
+    "eval_size": 1000,
     
     "to_save": true
 }
